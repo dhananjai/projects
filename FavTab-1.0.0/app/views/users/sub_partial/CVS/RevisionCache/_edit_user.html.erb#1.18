@@ -1,0 +1,149 @@
+<%= javascript_include_tag 'users' %>
+
+<% form_for @login_user, :remote => 'true', :html => {:id => 'edit_user',:onsubmit=>"return validate_user_details_form();"} do |user| %>
+  <table width="92%" class="profile_edit_form_table">
+    <tr>
+      <td  align="left" width="30%"><span class="form_field_name">Username:<span class="mendatory">*</span></span></td>
+      <td align="left" ><%= user.text_field :username, {:class=>"required", :noSpace=>"true"} %>
+        <label class='error'></label>
+        <pre class="hidden_element"><%= @login_user.username %></pre>
+      </td>
+    </tr>
+     <%= fields_for @login_user.user_detail do |user_det| %>
+    <tr>
+      <td  align="left" width="30%"><span class="form_field_name">About Me:</span></td>
+      <td align="left" >
+  <%#= user_det.text_field :about_me, {:maxlength=>"200"}  %>
+        <%= user_det.text_area :about_me, {:class=>"user_info_text_area"} %>
+                <label class='error'></label>
+        <pre class="hidden_element"><%= @login_user.user_detail.about_me if @login_user.user_detail%></pre>
+      </td>
+    </tr>
+    <% end %>
+    <tr>
+      <td  align="left" width="30%"><span class="form_field_name">Password:<span class="mendatory">*</span></span></td>
+      <td align="left" ><%= user.password_field :encrypted_password, {:class=>"required",:minlength=>"6" ,:noSpace=>"true",:value=>""} %>
+              <label class='error'></label>
+      </td>
+    </tr>
+    <%= fields_for @login_user.user_detail do |user_det| %>
+      <tr>
+        <td  align="left" width="30%"><span class="form_field_name">Work History:</span></td>
+        <td align="left" >
+          <%= user_det.text_area :work_info, {:class=>"user_info_text_area"} %>
+                  <label class='error'></label>
+          <pre class="hidden_element"><%= @login_user.user_detail.work_info if @login_user.user_detail %></pre>
+    <%#= user_det.text_field :work_info, {:maxlength=>"600"}  %>
+        </td>
+      </tr>
+      <tr>
+        <td  align="left" width="30%"><span class="form_field_name">Education:</span></td>
+        <td align="left" >
+          <%= user_det.text_area :education, {:class=>"user_info_text_area"} %>
+                  <label class='error'></label>
+          <pre class="hidden_element"><%= @login_user.user_detail.education if @login_user.user_detail %></pre>
+    <%#= user_det.text_field :education, {:maxlength=>"600"}  %>
+        </td>
+      </tr>
+      <tr>
+        <td  align="left" width="30%"><span class="form_field_name">Age:</span></td>
+        <td align="left" >
+          <%= user_det.text_field :age, {:class=>"number", :min=>"18", :max=>"100"}  %>
+          <label class='error'></label>
+          <pre class="hidden_element"><%= @login_user.user_detail.age if @login_user.user_detail %></pre>
+        </td>
+      </tr>
+      <tr>
+        <td  align="left" width="30%"><span class="form_field_name">Sex:</span></td>
+        <td align="left" >
+          <span class="form_field_name inline_display">Male &nbsp;</span><span class="find_people_radio float_l inline_display"><%= user_det.radio_button :sex, 'Male'%>&nbsp;&nbsp;&nbsp;</span>
+          <span class="form_field_name inline_display">&nbsp;Female &nbsp;</span><span class="find_people_radio float_l inline_display"><%= user_det.radio_button :sex, 'Female' %></span>
+        </td>
+      </tr>
+      <tr>
+        <td  align="left" width="30%"><span class="form_field_name">Internet Interest:</span></td>
+        <td align="left" >
+          <%= user_det.text_area :interest_internet, {:class=>"user_info_text_area"} %>
+          <label class='error'></label>
+          <pre class="hidden_element"><%= @login_user.user_detail.interest_internet if @login_user.user_detail %></pre>
+    <%#= user_det.text_field :interest_internet, {:maxlength=>"600"}  %>
+        </td>
+      </tr>
+
+    <% end %>
+    <tr>
+      <td></td>
+      <td align="left"><input type="submit" class="blue_btn" value="Update" onclick="return validate_user_details_form()" /></td>
+    </tr>
+  </table>
+<% end%>
+
+
+<br/><br/><br/><br/>
+
+<% form_tag('/users/edit_profile_picture', :multipart => true, :id => 'edit_profile_picture') do |picture| %>
+  <%= hidden_field :profile_picture, :user_id, :value => current_user.id %>
+  <table width="92%" class="profile_edit_form_table">
+    <tr>
+      <td class="picture_field" align="left" width="30%"><span class="form_field_name">
+          <%= "Change" if @login_user.profile_pictures.present? %> Profile Picture:<span class="mendatory">*</span></span></td>
+      <td class="picture_field" align="left" ><%= file_field :profile_picture, :photo, :class=>"required",:style=>"height:21px;width:200px;font-size:10px;"%>
+        
+      </td>
+    </tr>
+    <tr>
+      <td class="no_padding picture_field" >&nbsp;</td>
+      <td class="picture_field no_padding"><span class="form_hint">(Upload only images with extension .jpg, .png, .jpeg, .bmp and up to size of 1 MB)</span></td>
+    </tr>
+    <tr>
+      <td class="no_padding picture_field"></td>
+      <td class="no_padding picture_field" align="left"><input type="submit" class="blue_btn" value="Update" onclick="return check_attachment();"/></td>
+    </tr>
+  </table>
+<% end%>
+
+<script type="text/javascript">
+  function check_attachment()
+  {
+    file_obj = jQuery("#profile_picture_photo");
+    flag= true;
+    if(file_obj.val().length==0)
+    {
+      error="Please select picture.";
+      printError_new("profile_picture_photo",error);
+      flag = false;
+    }
+    else
+    {
+    if(!file_obj.val().match(".*(\.[Jj][Pp][Gg]|\.[Bb][Mm][Pp]|\.[Jj][Pp][Ee][Gg]|\.[Pp][Nn][Gg])"))
+    {
+       error="Invalid picture format.";
+      printError_new("profile_picture_photo",error);
+      flag = false;
+    }
+    }
+    return flag;
+  }
+
+  $(document).ready(function() {
+
+   $("#user_detail_age").keydown(function(event) {
+        // Allow: backspace, delete, tab and escape
+        if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 ||
+             // Allow: Ctrl+A
+            (event.keyCode == 65 && event.ctrlKey === true) ||
+             // Allow: home, end, left, right
+            (event.keyCode >= 35 && event.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        else {
+            // Ensure that it is a number and stop the keypress
+            if ((event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+                event.preventDefault();
+            }
+        }
+    });
+});
+
+</script>

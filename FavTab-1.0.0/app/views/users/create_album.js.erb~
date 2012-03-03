@@ -1,0 +1,12 @@
+<% if @album.id %>
+  var output_html = ("<%#= escape_javascript(render :partial => "album_block", :locals=>{:grp=>@album}).html_safe %>");
+  jQuery("#create_group_popup").fadeOut(function(){
+    jQuery("#groups_container").append(output_html);
+    display_flash_message("<%= @notice %>");
+  });
+
+<% else %>
+  jQuery("#create_group_popup").fadeOut(function(){
+    display_flash_message("<%= @notice %>");
+  });
+<% end %>

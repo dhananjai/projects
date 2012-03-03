@@ -1,0 +1,94 @@
+<script type="text/javascript" src="/javascripts/jquery.masonry.js"></script>
+<script type="text/javascript" src="/javascripts/modernizr-transitions.js"></script>
+<script type="text/javascript" src="/javascripts/pictures.js"></script>
+
+
+<span class="blue_header"><%= @curr_album.name %></span>
+<span class="add_photo_span">
+  <% if @login_user.id == @curr_album.user_id %>
+    <a class="album_action_link" href="javascript:void(0);" onclick="jQuery('#add_ph_op_div').show();jQuery('#add_photo_popup #find_photo_form,#add_photo_popup #upload_photo_form').hide();jQuery('#add_photo_popup').fadeIn();">Add Photo</a>
+    <span class="link_seperator">|</span>
+  <% end %>
+  <a class="album_action_link" href="<%= url_for :controller => "albums", :action => "index", :id => @curr_album.user_id %>">Back To Albums</a>
+</span>
+
+<div class="photos_container">
+   <span id="no_photos_in_album"><% if @pictures.blank? %>There are no photos available for you.<% end %></span>
+  <% @pictures.each do |a_p| %>
+    <%= render :partial=>"photo_block", :locals=>{:pic=>a_p} %>
+  <% end %>
+</div>
+<div class="photo_loader_div">
+  <img title="Loading" alt="Loading" src="/images/ajax-loader.gif"/>
+</div>
+<script type="text/javascript">
+  var added_from_site = false;
+  applyPhotoEffects();
+  jQuery(document).ready(function(){
+    
+    jQuery(".photos_container").masonry( "reload" );
+
+    jQuery(".photos").hover(function(){
+      jQuery(this).find(".photo_actions").show().animate({'height':'23px'},"fast");
+    },function(){
+      jQuery(this).find(".photo_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide();});
+    });
+
+  });
+  function applyPhotoEffects()
+  {
+    jQuery(".photos_container").masonry({
+      itemSelector: '.photos'
+    });
+  }
+
+</script>
+<%= render :partial=>"add_photo" %>
+<%= render :partial=>"remote_photos" %>
+<%= render :partial => "add_photo_from_system" %>
+
+<script type="text/javascript">
+  (function() {
+    var page = 1,
+    loading = false,
+    finish = false;
+
+    function nearBottomOfPage() {
+      //console.debug(($(window).scrollTop() > $(document).height() - $(window).height() - 100) && ($(document).height() - $(window).height() - 100)>0);
+      return ($(window).scrollTop() > $(document).height() - $(window).height() - 100) && ($(document).height() - $(window).height() - 100)>0;
+    }
+
+    function finish() {
+      finish = true;
+    }
+
+
+
+    $(window).scroll(function(){
+      if (loading) {
+        return;
+      }
+
+      if(nearBottomOfPage() && !finish) {
+        loading=true;
+        jQuery(".photo_loader_div").show();
+        page++;
+        $.ajax({
+          url: '/load_album_photos/<%= params[:id] %>?page=' + page,
+          type: 'get',
+          dataType: 'script',
+          success: function() {
+            loading=false;
+            jQuery(".photo_loader_div").hide();
+          }
+        });
+      }
+    });
+  
+    if(!nearBottomOfPage())
+    {
+      jQuery(".photo_loader_div").hide();
+    }
+
+  }());
+</script>

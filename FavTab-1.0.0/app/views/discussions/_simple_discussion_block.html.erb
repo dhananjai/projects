@@ -1,0 +1,40 @@
+<%#  require 'mechanize' %>
+
+<!-- main url start here -->
+  <div class="url_comments_wrapper discussion_<%= discussion.id %> ">
+    <!-- Url start here -->
+    <div class="urls_div root_div">
+      
+      <div class="float_l">
+        <a href="javascript:void(0);" class="discus_web_url_link" onclick="show_discussion(<%= discussion.id %>);"><%= discussion.site_title %></a><span class="comment_count">[ <%=  Comment.count(:all, :conditions=>["discussion_id=?",discussion.id]) %> ]</span>
+    	<div><%= render :partial=> "discussions/rating_partial", :locals=>{:rating_for => discussion, :section => 'popular'} %></div>
+        <div class="post_comment_div">
+          <span class="clear_both delete_discussion_div">
+            <% if @login_user.is_admin? %>
+              <a href="javascript:void(0);" class="discussion_action_link" onclick="delete_discussion(<%= discussion.id %>,jQuery(this))">Delete</a>
+            <% else %>
+              <a class="discussion_action_link comment_link " href="javascript:void(0);">Post Comment</a>
+            <% end %>
+          </span>
+          <% unless @login_user.is_admin? %>
+            <div class="comment_form_div">
+              <% form_for :comment, :url=>{:controller=>:discussions, :action => 'post_comments'},:html=>{:id=>"comment_"+discussion.id.to_s}, :remote=>true do |f|  %>
+                <%= text_area 'comment', 'comment', :class=>"post_comment_text_area float_l clear_both"%>
+                <%= hidden_field 'comment','discussion_id', :value=>discussion.id, :id=>"dis_id"%>
+              <a class="blue_btn clear_both float_l padding_top_six" onclick='post_comment("comment_<%= discussion.id %>",<%= discussion.id %>,jQuery(this));' id="post_discussion_comment" href="javascript:void(0);">Post Comment</a>
+              <% end %>
+              <a class="action_link no_text_deco float_l cancel_link comman_cancel_link" href="javascript:void(0);">Cancel</a>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- Url ends here -->
+  </div>
+<!-- main url end here -->
+
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    set_effects();
+  });
+</script>

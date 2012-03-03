@@ -1,0 +1,41 @@
+<% if @is_saved %>
+var comments_html = ("<%= escape_javascript(render :partial => "inner_comment", :locals=>{:response=>@comments,:is_creating=>true}).html_safe %>");
+var obj = curr_object;
+//curr_object.parent().parent().parent().parent().parent().children(".comments_div").prepend(comments_html);
+obj.parent().parent().parent().parent().parent().parent().children(".comments_div").prepend(comments_html);
+obj.parent().find(".post_comment_text_area").val("");
+
+obj.parent().parent().parent().parent().parent().next().css("padding-left","10px").show();
+
+obj.parent().parent().parent().parent().parent().parent().children().children("a.toggle_comment").removeClass("expand_btn").addClass("collapse_btn");
+
+var main_parent = obj.parent().parent().parent().parent().parent().parent().children(".comments_div");
+obj.parent().parent().hide();
+    obj.parent().parent().prev().show();
+
+
+/*main_parent.children(":first-child").find(".show_rate_it").click(function(){
+	  jQuery(this).next().toggle();
+          jQuery(this).text(jQuery(this).text() == 'Rate It' ? 'Cancel' : 'Rate It');
+	});*/
+        var current_object = null;
+
+main_parent.children(":first-child").find('.rating_class').raty({
+			click: function(score, evt) {
+				current_object = jQuery(this);
+				$(this).parent().submit();
+			}
+		});
+
+
+main_parent.children(":first-child").find(".rating_container").each(function(v,i){
+	var value = jQuery(this).children("span").html();
+	jQuery(this).children('.rating_class_fixed').raty({
+					readOnly:	true,
+					start:		value
+				});
+});
+<% end %>
+
+display_flash_message("<%= @notice %>");
+is_sending = false;

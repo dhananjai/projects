@@ -1,0 +1,11 @@
+class AddShareTypeToAlbumsAndAlbumPictures < ActiveRecord::Migration
+  def self.up
+    add_column :albums, :share_type, :integer, :null => false
+    add_column :album_pictures, :share_type, :integer, :null => false
+  end
+
+  def self.down
+    remove_column :album_pictures, :share_type
+    remove_column :albums, :share_type
+  end
+end

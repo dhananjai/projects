@@ -1,0 +1,8 @@
+
+jQuery("#group_<%= params[:id] %>").fadeOut().remove();
+<% if !@created_g_u.blank?%>
+  <% @created_g_u.each do |c_g_u| %>
+    var output_html = ("<%= escape_javascript(render :partial => "group_user", :locals=>{:g_u=>c_g_u}).html_safe %>");
+    jQuery("#group_<%= @defalut_group.id %> .group_users_container").append(output_html);
+  <% end %>
+<% end %>

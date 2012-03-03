@@ -1,0 +1,31 @@
+var $output_html = jQuery("<%= escape_javascript(render :partial => "discussions_multiple", :locals=>{:discussions=>@most_pop_discussions}).html_safe %>");
+jQuery(".most_pop_discussions .d_inner_div").append($output_html);
+
+jQuery(".most_pop_discussions").find(".show_rate_it").click(function(){
+	  jQuery(this).next().toggle();
+          jQuery(this).text(jQuery(this).text() == 'Rate It' ? 'Cancel' : 'Rate It');
+	});
+
+
+jQuery(".most_pop_discussions").find('.rating_class').raty({
+			click: function(score, evt) {
+				current_object = jQuery(this);
+				$(this).parent().submit();
+			}
+		});
+
+
+jQuery(".most_pop_discussions").find(".rating_container").each(function(v,i){
+	var value = jQuery(this).children("span").html();
+        if(!jQuery(this).children('.rating_class_fixed').children("img").size()>0)
+        {
+          jQuery(this).children('.rating_class_fixed').raty({
+					readOnly:	true,
+					start:		value
+				});
+        }
+
+});
+<%  if @discussions.blank? %>
+ m_p_finish();
+<% end %>

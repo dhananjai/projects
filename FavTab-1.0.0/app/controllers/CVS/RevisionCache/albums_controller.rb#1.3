@@ -1,0 +1,147 @@
+class AlbumsController < ApplicationController
+  require 'uri'
+  before_filter :login_required#, :except =>[:find_photo]
+  before_filter :other_user_check, :only => [:index,:show]
+  # GET /albums
+  # GET /albums.xml
+  def index
+    
+  end
+
+  # GET /albums/1
+  # GET /albums/1.xml
+  def show
+    @album = Album.find(:all,:conditions=>["user_id=?",@login_user.id])
+    @album_pictures = AlbumPicture.find(:all,:conditions=>["album_id=?",params[:id]])
+    @is_current_user = @other_user
+    respond_to do |format|
+      format.html # show.html.erb
+      #format.xml  { render :xml => @album }
+    end
+  end
+
+  # GET /albums/new
+  # GET /albums/new.xml
+  def new
+    @album = Album.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @album }
+    end
+  end
+
+  # GET /albums/1/edit
+  def edit
+    @album = Album.find(params[:id])
+  end
+
+  # POST /albums
+  # POST /albums.xml
+  def create
+    @album = Album.new(params[:album])
+
+    respond_to do |format|
+      if @album.save
+        format.html { redirect_to(@album, :notice => 'Album was successfully created.') }
+        format.xml  { render :xml => @album, :status => :created, :location => @album }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @album.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # PUT /albums/1
+  # PUT /albums/1.xml
+  def update
+    @album = Album.find(params[:id])
+
+    respond_to do |format|
+      if @album.update_attributes(params[:album])
+        format.html { redirect_to(@album, :notice => 'Album was successfully updated.') }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @album.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /albums/1
+  # DELETE /albums/1.xml
+  def destroy
+    @album = Album.find(params[:id])
+    @album.destroy
+
+    respond_to do |format|
+      format.html { redirect_to(albums_url) }
+      format.xml  { head :ok }
+    end
+  end
+
+
+  #--
+  #Created by: Jalendra Bhanarkar
+  #Created on: 11/02/2012
+  #Purpose: add photo options
+  #++
+  def add_photo
+    if(params[:photo_url])
+      @photo = Picture.new
+      url = params[:photo_url]
+      @photo.photo_detail = params[:photo_detail]
+      url_host =URI.parse(url).host
+      @photo.site_name = url_host
+      @photo.upload_image(url)
+      @album_photo = AlbumPicture.create(:album_id=>params[:album_id], :picture_id=>@photo.id)
+    end
+    #render :text => "Added"
+    respond_to do |format|
+          format.js
+        end
+  end
+
+  #--
+  #Created by: Jalendra Bhanarkar
+  #Created on: 11/02/2012
+  #Purpose: add photo options
+  #++
+  def find_photo
+    begin
+      post_agent = Mechanize.new
+      @html = post_agent.get(params[:site_url]).body
+      url_host =URI.parse(params[:site_url]).host
+      #puts url_host
+      #puts @html
+    rescue => e
+    end
+    render :text=>@html
+  end
+
+
+  #--
+  #Created by: Jalendra Bhanarkar
+  #Created on: 11/02/2012
+  #Purpose: add photos_from_site
+  #++
+  def add_photos_from_site
+    if(params[:photo_url])
+      @url = params[:photo_url]
+      @album = Album.find(:all,:conditions=>["user_id=?",@login_user.id])
+
+      render :action=>"add_photos_from_site", :layout=>false
+       
+        
+        
+     
+    end
+    
+  end
+
+  def load_my_groups
+    @groups = Group.find(:all,:conditions=>["user_id=?",@login_user.id])
+    render :partial=> "load_my_groups", :locals=>{:groups=>@groups}
+  end
+  
+end

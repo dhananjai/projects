@@ -1,0 +1,30 @@
+<div class="grey_overlay" id="edit_group_popup">
+  <div class="pop_up" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery('#edit_group_popup').fadeOut();" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content">
+        <%= form_for :album, :url=>{:controller=>:albums, :action => 'edit_album'},:remote=>true do |f|  %>
+          <span class="popup_heading">Rename Album</span>
+          <table width="100%" class="popup_form_table">
+            <tr>
+              <td  align="left" width="30%"><span class="form_field_name">Name:</span></td>
+              <td align="left" ><%= text_field 'album', 'name', :style=>"width:200px", :id=>"album_name_edit"%><br/>
+                <span id="group_name_edit_error" class="form_error"></span>
+              </td>
+            </tr>
+            <tr>
+              <td><input type="hidden" value="" id="album_id" name="album[id]"/> </td>
+              <td align="left"><input type="submit" class="blue_btn" value="Update" onclick="return edit_album_form();"/></td>
+            </tr>
+          </table>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+      jQuery("#edit_group_popup .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#edit_group_popup .pop_up").height())/2+"px"});
+      jQuery("#edit_group_popup .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#edit_group_popup .pop_up").width())/2+"px"});
+  });
+</script>

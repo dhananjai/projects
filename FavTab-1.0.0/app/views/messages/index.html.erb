@@ -1,0 +1,97 @@
+<script type="text/javascript">
+  var curr_object;
+  jQuery(document).ready(function(){
+
+    jQuery("#inbox_div").children(".menu_item ").addClass("current_menu");
+
+
+    /*for css*/
+    doc_ht = jQuery(document).height();
+    jQuery(".background_wrapper").css('height',doc_ht+'px');
+    if(jQuery.browser.opera)
+    {
+      jQuery(".blue_btn").css('padding-bottom','2px');
+    }
+    /* UI Functionality */
+    /* For toggling reply section */
+    jQuery(".reply_link").click(function(){
+      current_link = jQuery(this);
+      if(current_link.html()=="Reply")
+      {
+        current_link.html("Cancel");
+        current_link.parent().parent().parent().find(".reply_message_form_div").slideDown();
+      }
+      else
+      {
+        current_link.html("Reply");
+        current_link.parent().parent().parent().find(".reply_message_form_div").slideUp();
+      }
+      return false;
+    });
+
+    /* For toggling message sections*/
+    
+    $('.delete_msg').bind('ajax:success', function() {
+      $(this).closest('tr').fadeOut();
+    });
+
+  });
+
+  function set_current_object(curr_obj)
+  {
+    curr_object = curr_obj;
+  }
+
+</script>
+<div class="main_panel">
+  <span class="blue_header">Messages</span>
+  <!-- Message conatiner satart here -->
+  <div class="messages_conatiner inbox_div">
+    <% if !@received_msgs.blank? %>
+      <table>
+        <% @received_msgs.each do |message| %>
+          <tr><td>
+              <!-- message 1 -->
+              <div class="inbox_message">
+                <div class="user_image_div">
+                  <a href="<%= message.sender.is_admin? ? '#': get_user_by_user_id(message.sender_id).profile_path %>" class="user_name">
+                    <img alt="" class="medium_user_image" src="<%= get_user_by_user_id(message.sender_id).profile_pic(:medium) %>" /></a>
+                </div>
+                <div class="message_div">
+                  <a href="<%= message.sender.is_admin? ? '#':get_user_by_user_id(message.sender_id).profile_path %>" class="user_name">
+                    <% if message.sender.is_admin? %>
+                      System Message
+                    <%else %>
+                      <%= message.sender.username %>
+                    <% end %>
+                  </a>
+                  <span class="message_date_time">Received at <%= message_time(message) %></span>
+                  <span class="message_detail">
+                    <pre class="message_pre"><%= message.message %></pre>
+                  </span>
+                  <div class="message_action_div">
+                    <% unless message.sender.is_admin? %>
+                      <a href="#" class="discussion_action_link reply_link">Reply</a>
+                      <span class="spacer">&nbsp;</span>
+                    <% end %>
+                    <%=  link_to 'Delete', {:action => 'message_delete', :id => message.id }, :confirm=>"Are you sure you want to delete?", :remote=>true, :class => "discussion_action_link delete_msg" %>
+                  </div>
+                </div>
+                <% unless message.sender.is_admin? %>
+                  <div class="reply_message_form_div" id="reply_msg_box_<%= message.id %>">
+                    <%= render 'reply_msg', :message => message %>
+                  </div>
+                <% end %>
+              </div>
+            </td></tr>
+        <% end %>
+        <%= will_paginate @received_msgs %>
+      </table>
+    <% else  %>
+      You have no messages.
+    <% end %>
+  </div>
+</div>
+<!-- end message -->
+<!-- Message conatiner end here -->
+

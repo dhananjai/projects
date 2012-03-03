@@ -1,0 +1,17 @@
+<div class="groups_container">
+  <%= flash[:notice] %>
+  <table class="share_tab_user_table" id="add_to_group_rows">
+   <% if !groups.nil? %>
+  <% groups.each do |grp| %>
+      <tr>
+        <td><input type="checkbox" id="grp_check_box_<%= grp.id %>" name="group_ids[]" value="<%= grp.id %>"></input></td>
+        <td>
+          <span class="user_name" style="width: 200px;"><%= grp.name %></span>
+        </td>
+      </tr>
+    <% end %>
+      <% else %>
+      
+      <% end %>
+  </table>
+</div>

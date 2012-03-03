@@ -1,0 +1,36 @@
+class Picture < ActiveRecord::Base
+  require 'open-uri'
+  has_many :album_pictures ,:dependent => :destroy
+   has_attached_file :photo, :path => ":rails_root/public/albums/photos/:id/:style_:basename.:extension",
+    :url => "/albums/photos/:id/:style_:basename.:extension",
+    :styles => {
+    :small  => "50x50>",
+    :medium=> "190x" }, :whiny => false
+
+  def upload_image(url)
+    begin
+      io = open(URI.escape(url))
+      if io
+        def io.original_filename; base_uri.path.split('/').last; end
+        io.original_filename.blank? ? nil : io
+        self.photo = io
+      end
+      self.save(false)
+    rescue Exception => e
+      logger.info "EXCEPTION# #{e.message}"
+    end
+  end
+
+
+  #--
+  #Created by: Jalendra Bhanarkar
+  #Created on: 13/02/2012
+  #Purpose:
+  #++ This method is use to show thumbnail for different size
+  def picture_photo(thumb)
+    #return "/images/profile_image.jpg" unless self.profile_pictures.present?
+    file = self.photo(thumb)
+    File.exist?("#{file}") ? file : "/images/profile_image.jpg"
+  end
+
+end

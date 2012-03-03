@@ -1,0 +1,48 @@
+<% @other_user.nil? ? @other_user=@login_user :@other_user %>
+<table width="92%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="left" width="35%"><span class="profile_detail_field_name">Username</span></td>
+    <td align="left" width="5%"><span class="profile_detail_field_name">:</span></td>
+    <td align="left" width="60%"><span class="profile_detail_field_val"><%= @other_user.username %></span> </td>
+  </tr>
+  <tr>
+    <td align="left"><span class="profile_detail_field_name">About Me</span></td>
+    <td align="left"><span class="profile_detail_field_name">:</span></td>
+    <td align="left"><span class="profile_detail_field_val">
+        <pre class="pre_text"><%= @other_user.user_detail.about_me if @other_user.user_detail %></pre> </span>
+    </td>
+  </tr>
+  <tr>
+    <td align="left"><span class="profile_detail_field_name">Work History</span></td>
+    <td align="left"><span class="profile_detail_field_name">:</span></td>
+    <td align="left"><span class="profile_detail_field_val">
+        <pre class="pre_text"><%= @other_user.user_detail.work_info if @other_user.user_detail %></pre>
+      </span>
+    </td>
+  </tr>
+  <tr>
+    <td align="left" ><span class="profile_detail_field_name">Education</span></td>
+    <td align="left" ><span class="profile_detail_field_name">:</span></td>
+    <td align="left" ><span class="profile_detail_field_val"><pre class="pre_text"><%= @other_user.user_detail.education if @other_user.user_detail %></pre> </span> </td>
+  </tr>
+  <tr>
+    <td align="left" ><span class="profile_detail_field_name">Age</span></td>
+    <td align="left"><span class="profile_detail_field_name">:</span></td>
+    <td align="left" ><span class="profile_detail_field_val"><%= @other_user.user_detail.age if @other_user.user_detail %></span> </td>
+  </tr>
+
+  <tr>
+    <td align="left" ><span class="profile_detail_field_name">Sex</span></td>
+    <td align="left" ><span class="profile_detail_field_name">:</span></td>
+    <td align="left" ><span class="profile_detail_field_val"><%= @other_user.user_detail.sex if @other_user.user_detail %></span> </td>
+  </tr>
+  <tr>
+    <td align="left"><span class="profile_detail_field_name">Internet Interest</span></td>
+    <td align="left"><span class="profile_detail_field_name">:</span></td>
+    <td align="left"><span class="profile_detail_field_val">
+        <pre class="pre_text"><%= @other_user.user_detail.interest_internet if @other_user.user_detail %></pre>
+      </span>
+    </td>
+  </tr>
+
+</table>

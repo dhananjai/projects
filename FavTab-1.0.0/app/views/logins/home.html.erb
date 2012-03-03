@@ -1,0 +1,168 @@
+<%= javascript_include_tag 'home' %>
+<script type="text/javascript">
+  function validate_forget_password_form()
+  {
+    var current_email = jQuery("#user_email_id").val();
+    var emailRegExp=/^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/; 
+    error ="";
+    if(current_email=="" || current_email=="Enter your email")
+    {
+      error = "Please enter email";
+    }
+    else if(!current_email.match(emailRegExp))
+    {
+      error = "Please enter valid email";
+    }
+    jQuery("#forget_password_email_error").html(error);
+    if(error=="")
+    {
+      jQuery("#forget_password_email_error").html("&nbsp;");
+      jQuery("#forgot_password_form").submit();
+    }
+  }
+</script>
+
+<%= form_for @user,:url=>{:controller=>:logins, :action => 'create'}, :html=>{:class=>"submit-btn-login", :onSubmit => "return checkSignupValidation()",:id=>"signup_form"}  do |f|%>
+  <div class="outer_shadow">
+    <div class="sign_up_div">
+      <div class="sign_up_form_div">
+        <span class="signup_heading">Create a new account</span>
+        <ul class="sign_up_form_elements">
+          <li><span class="form_field_name">Username <span class="mendatory">*</span></span></li>
+          <li><%= f.text_field :username, {:id => "user_name" }%>
+	    <span class="hidden_element">admin</span>
+	    <span id="username_error" class="form_error clear_both">&nbsp;</span>
+            <span class="form_hint">Please do not use any identifying info in your username. We want our users to remain anonymous.</span>
+          </li>
+          <li><span class="form_field_name">Email <span class="mendatory">*</span></span></li>
+          <li><%= f.text_field  :email, :id => "user_email" %>
+	    <span class="hidden_element">abc@abc.com</span>
+	    <span id="email_error" class="form_error clear_both">&nbsp;</span>
+	  </li>
+          <li><span class="form_field_name">Password <span class="mendatory">*</span></span></li>
+          <li><%= f.password_field :encrypted_password, :id => "user_password",:value=>"" %>
+	    <span class="hidden_element">passw</span>
+	    <span id="password_error" class="form_error clear_both">&nbsp;</span>
+	  </li>
+          <li class="top_twenty_margin">
+            <input type="submit" class="blue_btn" style="" value="Sign Up"/>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+  <div class="sign_in_div">
+    <div class="sign_up_form_div relative_position" id="sign_in_div">
+      <div class="plugin_dl_area">
+        <a class="orange_btn" target="_blank" href="https://chrome.google.com/webstore/detail/npmcbpbplngfameipiobaemkcpnaiiic">Download plug-in</a>
+        
+      </div>
+      <span class="signup_heading">Already have an account</span>
+      <%= form_for @users, :url=>{:controller=>:logins, :action => 'login'}, :class=>"submit-btn-login", :onSubmit => "return checkSigninValidation()" do |f|%>
+      <ul class="sign_up_form_elements">
+        <li><span class="form_field_name">Username</span></li>
+        <li><%= f.text_field :username, :id => "user_loginname", :value => '' %>
+	  <span class="hidden_element">Enter the username</span>
+	  <span id="login_username_error" class="form_error">&nbsp;</span>
+        </li>
+        <li><span class="form_field_name">Password</span></li>
+        <li><%= f.password_field :password, :id => "user_loginpassword", :value => '' %><span class="hidden_element">passw</span>
+	    <span id="login_password_error" class="form_error">&nbsp;</span>
+	</li>
+        <li class="top_twenty_margin">
+          <input type="submit" class="blue_btn" style="" value="Sign In" id="sign_in"/>
+          <a class="action_link" href="javascript:void(0);" onclick="jQuery('#sign_in_div').hide();jQuery('#forgot_password_div').show();jQuery('#forget_password_email_error').html('&nbsp;');">Forgot Password?</a>
+  
+        </li>
+      </ul>
+      <% end %>
+    </div>
+    <div class="sign_up_form_div hidden_element" id="forgot_password_div">
+      <span class="signup_heading">Forgot Password?</span>
+      <%= form_for :user, :url=>{:controller=>:logins, :action => 'forgot_password'},:html=>{:id=>"forgot_password_form"} do |f|  %>
+        <ul class="sign_up_form_elements">
+          <li><span class="form_field_name">Email <span class="mendatory">*</span></span></li>
+          <li><%#= text_field 'user', 'email', :class=>"post_comment_text_area float_l clear_both required", :id=>"user_email_id" %>
+            <%#= user.text_field :username, {:class=>"",  :maxlength=>"50"} %>
+            <input id="user_email_id" class="post_comment_text_area float_l clear_both required" type="email" size="30" name="user[email]">
+            <span class="hidden_element">Enter your email</span>
+            <span class="form_error" id="forget_password_email_error">&nbsp;</span>
+          </li>
+          <li class="top_twenty_padding">
+             <!--<input type="submit" class="blue_btn float_l" value="Submit" id="forgot_password_submit_btn"/>-->
+             <a href="javascript:void(0);" class="blue_btn clear_both float_l padding_top_six center_text no_text_deco" onclick=' validate_forget_password_form()' id="forgot_pw_subit_btn">Submit</a>
+            <a class="action_link no_text_deco float_l comman_cancel_link" href="javascript:void(0);" onclick="jQuery('#sign_in_div').show();jQuery('#forgot_password_div').hide();">Cancel</a>
+          </li>
+        </ul>
+      <% end%>
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    <% if params[:action]=="home" %>
+	jQuery(document).ready(function(){
+        
+		/* For form */
+		var objText = jQuery("input[type='text'], input[type='password'],input[type='email']");
+		objText.each(function(v,i){
+			var current_text = jQuery(this);
+			var default_text = current_text.siblings(".hidden_element").html();
+			current_text.val(default_text);
+			current_text.focus(function(){
+				if(current_text.val()== default_text)
+				{
+					current_text.val("");
+				}
+			});
+			current_text.blur(function(){
+				if(current_text.val()== "")
+				{
+					current_text.val(default_text);
+				}
+			});
+		});
+
+	});
+ <% else %>
+  jQuery(document).ready(function(){
+
+		/* For form */
+		var objText = jQuery("#sign_in_div input[type='text'],#sign_in_div input[type='password'],#forgot_password_div input[type='email']");
+		objText.each(function(v,i){
+			var current_text = jQuery(this);
+			var default_text = current_text.siblings(".hidden_element").html();
+			current_text.val(default_text);
+			current_text.focus(function(){
+				if(current_text.val()== default_text)
+				{
+					current_text.val("");
+				}
+			});
+			current_text.blur(function(){
+				if(current_text.val()== "")
+				{
+					current_text.val(default_text);
+				}
+			});
+		});
+
+	});
+<% end %>
+
+
+  </script>
+
+
+
+
+
+
+
+
+
+

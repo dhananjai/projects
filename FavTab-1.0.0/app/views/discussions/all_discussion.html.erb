@@ -1,0 +1,142 @@
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    /*for css*/
+    doc_ht = jQuery(document).height();
+    jQuery(".background_wrapper").css('height',doc_ht+'px');
+    if(jQuery.browser.opera)
+    {
+      jQuery(".blue_btn").css('padding-bottom','2px');
+    }
+    /* UI Functionality */
+		
+    set_effects();
+    apply_scroll_effects();
+
+  });
+</script>
+<script type="text/javascript" src="/javascripts/jquery.ui.selectmenu.js"></script>
+<link type="text/css" rel="stylesheet" media="screen" href="/stylesheets/jquery.ui.selectmenu.css"></link>
+<style>
+  .discus_web_url_link
+  {
+    color:#08384f;
+    font-size:12px;
+    text-align:left;
+    padding-left:4px;
+    float:left;
+    text-decoration:none;
+    max-width: 850px !important;
+    word-wrap: break-word;
+  }
+  body {font-size: 11px ; font-family:"Verdana",sans-serif; }
+  fieldset { border:0; }
+  label,select,.ui-select-menu { float: left; margin-right: 10px; }
+  select { width: 120px; }
+  .wrap ul.ui-selectmenu-menu-popup li a { font-weight: bold; }
+</style>
+<div>
+  <span class="blue_header">All Discussions</span>
+  <div class="discussion_sorting_div">
+    <select id="discussion_sorting" name="discussion[sorting]" class="float_l">
+      <option value="30day">Last 30 day</option>
+      <option value="30min">Last 30 min</option>
+      <option value="day">Last day</option>
+      <option value="week">Last week</option>
+      <option value="year">Last year</option>
+    </select>
+    <script type="text/javascript">
+      jQuery("#discussion_sorting").selectmenu();
+    </script>
+    <span class="all_discussion_sorting_options">
+      <span class="link_seperator float_l">&nbsp;|&nbsp;</span>
+      <a class="discussion_action_link" href="javascript:void(0);" onclick="set_order('comments')">Sort by Most Comments</a>
+      <span class="link_seperator float_l">&nbsp;|&nbsp;</span>
+      <a class="discussion_action_link" href="javascript:void(0);" onclick="set_order('ratings')">Sort by Most Rated</a>
+    </span>
+  </div>
+  <%= hidden_field_tag 'order_by', 'comments' %>
+  <div class="normal_url_block">
+    <div id="result" class="float_l">
+      <%  @most_pop_discussions.each do |discussion| %>
+        <%= render :partial => "simple_discussion_block", :locals=>{:discussion=>discussion}%>
+      <% end %>
+    </div>
+    <div class="loader_div" id="all_discussions_loader">
+      <img title="Loading" alt="Loading" src="/images/ajax-loader.gif"/>
+    </div>
+  </div>
+</div>
+<!-- main url end here -->
+
+<script type="text/javascript">
+  var page = 1;
+  loading = false;
+  finished = false;
+
+  function set_order(order){
+    jQuery("#order_by").val(order);
+    var current_value= jQuery("#discussion_sorting").val();
+    jQuery.get("load_discussion_as_per_time/"+current_value+"?order_by="+order,function(data){
+      jQuery("#result").html(data);
+      page = 1;
+      finished = false;
+    });
+  }
+
+
+  jQuery(document).ready(function(){
+
+    
+    jQuery("#discussion_sorting").change(function(){
+      var current_value= jQuery(this).val();
+      var current_order= jQuery("#order_by").val();
+      jQuery.get("load_discussion_as_per_time/"+current_value+"?order_by="+current_order,function(data){
+        page = 1;
+        finished = false;
+        jQuery("#result").html(data);
+      });
+    });
+
+    
+  });
+</script>
+
+<script type="text/javascript">
+  
+  (function() {
+  
+    function nearBottomOfPage() {
+      return $(".normal_url_block").scrollTop() > $(".normal_url_block #result").height() - $(".normal_url_block").height() - 100;
+    }
+
+    function finish() {
+      finished = true;
+    }
+
+    $(".normal_url_block").scroll(function(){
+    
+      if (loading) {
+        return;
+      }
+
+      if(nearBottomOfPage() && !finished) {
+        loading=true;
+        jQuery("#all_discussions_loader").show();
+        page++;
+        var current_value= jQuery("#discussion_sorting").val();
+        var current_order= jQuery("#order_by").val();
+        jQuery.get("load_discussion_as_per_time/"+current_value+"?order_by="+current_order+"&page="+page,function(data){
+          jQuery("#result").append(data);
+          if(data.length==0)
+          {
+            finished = true;
+          }
+          loading=false;
+          jQuery("#all_discussions_loader").hide();
+        });
+      
+      }
+    });
+  }());
+</script>
+

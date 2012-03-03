@@ -1,0 +1,109 @@
+
+<style>
+.discus_web_url_link
+{
+	color:#08384f;
+	font-size:12px;
+	text-align:left;
+	padding-left:4px;
+	float:left;
+	text-decoration:none;
+        max-width: 370px !important;
+        word-wrap: break-word;
+}
+</style>
+<%= javascript_include_tag 'discussion' %> 
+
+  <!-- Discuss a web page -->
+  <div class="discussion_block float_l" id="discuss_a_web_page_div">
+    <%= render :partial => "discuss_a_web_page", :locals=>{:lastest_discussion=>@lastest_discussion}, :layout => false %>
+  </div>
+  <!-- Discuss a web page end -->
+
+  <div class="discussion_block float_r">
+    <%= render :partial => "update_from_followed_members", :locals=>{:uffm=>@update_from_followed_members}, :layout => false %>
+  </div>
+ 
+  
+  <div class="discussion_block float_l">
+    <div class="discussion_header" align="left">
+      <span class="blue_header padding_left_ten" id="my_discussion_header">My Discussions</span>
+    </div>
+    <div  id="my_discussion_comments">
+      <%= render :partial => "my_discussions", :locals=>{:discussions=>@discussions,:direct=>true}, :layout => false %>
+    </div>
+  </div>
+
+  <!-- Most Popular Discussion -->
+    <%= render :partial=> "most_popular_discussion" %>
+  <!-- End Most Popular Discussion -->
+  
+        
+<script type="text/javascript">
+  function load_my_comments()
+  {
+    jQuery.get('/load_my_comments/<%= current_user.id %>', function(data) {
+      jQuery("#my_discussion_comments").html(data);
+    });
+  }
+  function load_my_discussions()
+  {
+    jQuery.get('/load_my_discussions/<%= current_user.id %> ', function(data) {
+      jQuery("#my_discussion_comments").html(data);
+    });
+  }
+
+  
+  jQuery(document).ready(function(){
+    /*for css*/
+    if(jQuery.browser.opera)
+    {
+      jQuery(".blue_btn").css('padding-bottom','2px');
+    }
+    set_effects();
+
+    apply_scroll_effects();
+
+  });
+    
+</script>
+
+<script type="text/javascript">
+(function() {
+  var m_disc_page = 1,
+  most_pop_page = 1,
+  loading = false,
+  finish = false;
+
+  function nearBottomOfPage_most_pop_d()
+  {
+    return jQuery(".most_pop_discussions").scrollTop() > jQuery(".most_pop_discussions .d_inner_div").height() - jQuery(".most_pop_discussions").height()-10;
+  }
+
+  function finish() {
+    finish = true;
+  }
+
+  jQuery(".most_pop_discussions").scroll(function(){
+    if (loading) {
+      return;
+    }
+
+    if(nearBottomOfPage_most_pop_d() && !finish) {
+      loading=true;
+      jQuery(".photo_loader_div").show();
+      most_pop_page++;
+     jQuery.ajax({
+        url: '/load_most_pop_discussions_on_scroll/?page=' + most_pop_page,
+        type: 'get',
+        dataType: 'script',
+        success: function() {
+          loading=false;
+           jQuery(".photo_loader_div").hide();
+        }
+      });
+    }
+  });
+}());
+</script>
+

@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Tabitt</title>
+    <%= stylesheet_link_tag "style" %>
+    <%= stylesheet_link_tag "reset" %>
+    <% csrf_meta_tag %>
+    <script src="/javascripts/jquery.js" type="text/javascript"></script>
+    <%= javascript_include_tag 'jquery-1.7.1.js', 'jquery-ui-1.8.16.custom.min.js', 'rails.js' %>
+    <%= stylesheet_link_tag 'jquery-ui-1.8.16.custom.css' %>
+    <script type="text/javascript" src="/javascripts/jquery.ui.selectmenu.js"></script>
+<link type="text/css" rel="stylesheet" media="screen" href="/stylesheets/jquery.ui.selectmenu.css"></link>
+   <script type="text/javascript" src="/javascripts/jquery.raty.js"></script>
+    <!--[if IE ]>
+	<link type="text/css" rel="stylesheet" href="/stylesheets/ie.css">
+    <![endif]-->
+  </head>
+  <body>
+    <div class="pop_up" style="height: 377px;width: 344px;position:absolute;left:10px;top:10px;" >
+    <div class="popup_inner_div">
+      <div class="popup_content">
+        <span class="popup_heading">Add Photo</span>
+        
+          <div class="rem_ph_div">
+                  <img src="<%= params[:photo_url] %>" class="current"/>
+          </div>
+        <div>
+          <%= form_for :photos, :url=>{:controller=>:albums, :action => 'add_photo'},:html=>{:id=>"add_photo_from_site_from"},:remote=>true do |f|  %>
+          <div class="add_rem_ph_form" style="height: 123px;">
+
+            <label for="album">Select an Album:</label>
+            <select  name="album_id" id="album_select_menu">
+              <option value="none">Select Album</option>
+              <% @album.each do |a| %>
+                <option value="<%= a.id %>"><%= a.name %></option>
+              <% end %>
+            </select><br/>
+            <span id="album_error" class="form_error"></span>
+            <label for="album">Details:</label>
+            <textarea id="photo_detail" class="phot_details_text" name="photo_detail"> </textarea>
+            <span id="photo_detail_error" class="form_error"></span>
+            <input type="hidden" name="photo_url" value="<%= params[:photo_url] %>" id="photo_url_field" />
+            <input type="hidden" name="added_from" value="<%= params[:site_url] %>" />
+          </div>
+          <div class="clear_both ph_privacy_options_div" style="padding-left: 10px;">
+            <span class="ph_privacy_options"><input checked name="share_type" type="radio" class="float_l" onclick="jQuery('.groups').hide();jQuery('.pop_up').css('height','377px');" value="1" /><label>Private</label> </span>
+            <span class="ph_privacy_options"><input name="share_type" type="radio" class="float_l" onclick="jQuery('.groups').hide();jQuery('.pop_up').css('height','377px')" value="0" /><label>Public</label> </span>
+            <span class="ph_privacy_options"><input id="share_with_grp_chk" name="share_type" type="radio" class="float_l" onclick="fetch_my_groups()" value="2"  /><label>Share With Groups</label> </span>
+            <br/><br/>
+            <span class="form_error" id="photo_group_error"></span>
+            <div class="groups" style="display: none;width:300px"></div>
+            <input id="add_photo_from_site_btn" type="submit" class="blue_btn clear_both" value="Add" onclick="return check_add_remote_photo_form()" />
+          </div>
+        <% end  %>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+
+
+  <script type="text/javascript">
+    var added_from_site = true;
+  jQuery(document).ready(function(){
+    jQuery("#show_remote_photos .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#show_remote_photos .pop_up").height())/2+"px"});
+    jQuery("#show_remote_photos .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#show_remote_photos .pop_up").width())/2+"px"});
+    jQuery('#album_select_menu').selectmenu();
+
+    $('#add_photo_from_site_btn').bind('ajax:success', function() {
+      alert("hi");
+    });
+  });
+  
+  function fetch_my_groups()
+  {
+    jQuery.get("load_my_groups",function(data){
+      jQuery(".pop_up").css("height","495px")
+      jQuery(".groups").show();
+      jQuery(".groups").html(data);
+    });
+  }
+
+  function check_add_remote_photo_form()
+  {
+    jQuery(".form_error").html("");
+    var image_url = jQuery("#photo_url_field");
+    var img_detail = jQuery("#photo_detail");
+    var album = jQuery("#album_select_menu");
+    var flag = true;
+    if(image_url.val().length==0)
+    {
+      flag=false;
+      alert("Please chose picture to add.")
+    }
+    if(album.val()=="none")
+    {
+      flag=false;
+      jQuery("#album_error").html("Please select an album.");
+    }
+    if(jQuery.trim(img_detail.val()).length==0)
+    {
+      flag=false;
+
+      jQuery("#photo_detail_error").html("Please enter photo details.");
+      //img_detail.next(".form_error").html("Please enter photo details.");
+    }
+    else
+    {
+      if(img_detail.val().length>500)
+      {
+        flag=false;
+        jQuery("#photo_detail_error").html("Photo details should be of maximum 500 characters.");
+        //img_detail.next(".form_error").html("Photo details should be of maximum 500 characters.");
+      }
+    }
+    if(jQuery("#share_with_grp_chk").attr("checked")=="checked" && jQuery(".groups_container input[type='checkbox']:checked").length==0)
+    {
+      flag=false;
+      jQuery("#photo_group_error").html("Please select at least one group.");
+    }
+    if(flag)
+    {
+      jQuery("#add_photo_from_site_from").submit();
+      jQuery("#add_photo_from_site_btn").attr("disabled","true").val("Adding");
+    }
+    return false;
+  }
+
+  function reset_remote_photo_from()
+  {
+    jQuery("#show_remote_photos").hide();
+    jQuery("#site_url_prev, #photo_detail").val("");
+  }
+</script>
+
+<style>
+  body {font-size: 11px ; font-family:"Verdana",sans-serif; }
+  fieldset { border:0; }
+  label,select,.ui-select-menu { float: left; margin-right: 10px; }
+  select { width: 200px; }
+  .wrap ul.ui-selectmenu-menu-popup li a { font-weight: bold; }
+</style>
+</html>

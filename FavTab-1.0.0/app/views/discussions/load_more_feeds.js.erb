@@ -1,0 +1,9 @@
+
+<% if @feeds.blank? %>
+  //jQuery("#feeds_loader").hide();
+  //feed_finish();
+<% else %>
+  var $output_html = jQuery("<%= escape_javascript(render :partial=>"feeds", :locals=>{:feeds => @feeds}).html_safe %>");
+  jQuery(".feeds_block .d_inner_div").append($output_html);
+  set_effects();
+<% end %>

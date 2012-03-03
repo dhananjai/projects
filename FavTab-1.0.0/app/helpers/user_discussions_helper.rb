@@ -1,0 +1,2 @@
+module UserDiscussionsHelper
+end

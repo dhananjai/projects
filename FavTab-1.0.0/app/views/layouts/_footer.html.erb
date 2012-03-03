@@ -1,0 +1,10 @@
+<ul class="footer_main_ul">
+  <li><span class="footer_text"> Copyright 2011-2012</span></li>
+  <li>
+    <ul class="footer_nav">
+      <li><a href="/" class="<%= 'footer_current_page' if (!@login_user && !(['about_us', 'contact_us'].include?(params[:action]))) || (@is_current_user && (['my_account'].include?(params[:action]))) %>">Home</a></li>
+      <li><a href="/about_us" class="<%= 'footer_current_page' if 'about_us' == params[:action]  %>">About Us</a></li>
+      <li><a href="/contact_us" class="<%= 'footer_current_page' if 'contact_us' == params[:action]  %>">Contact Us</a></li>
+    </ul>
+  </li>
+</ul>

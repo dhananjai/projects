@@ -1,0 +1,10 @@
+class Album < ActiveRecord::Base
+  has_many :pictures,:dependent => :destroy
+  belongs_to :user
+  
+  validates :name, :presence => {:message => "Cann't be blank. "}, :length => {:maximum => 20}, :uniqueness => {:scope => :user_id}
+
+  def show_photo_per_album
+    Picture.where("album_id=?", self.id).limit(9)
+  end
+end

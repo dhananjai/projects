@@ -1,0 +1,29 @@
+var comments_html = ("<%= escape_javascript(render :partial => "/discussions/rating_partial", :locals=>{:rating_for=>@rate}).html_safe %>");
+
+var main_parent = current_object.parent().parent().parent().parent();
+
+main_parent.html(comments_html);
+
+main_parent.find(".show_rate_it").click(function(){
+jQuery(this).next().toggle();
+jQuery(this).text(jQuery(this).text() == 'Rate It' ? 'Cancel' : 'Rate It');
+});
+
+
+
+main_parent.find('.rating_class').raty({
+click: function(score, evt) {
+current_object = jQuery(this);
+$(this).parent().submit();
+}
+});
+
+
+main_parent.find(".rating_container").each(function(v,i){
+var value = jQuery(this).children("span").html();
+jQuery(this).children('.rating_class_fixed').raty({
+readOnly:	true,
+start:		value
+});
+});
+

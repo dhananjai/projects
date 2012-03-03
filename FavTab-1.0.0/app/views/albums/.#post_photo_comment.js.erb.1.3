@@ -1,0 +1,10 @@
+<% if @comment.errors.blank? %>
+var $output_html = jQuery("<%= escape_javascript(render :partial => "photo_comment_block", :locals=>{:comment=>@comment}).html_safe %>");
+jQuery(".photos_comment_div_<%= params[:picture_id] %>").append($output_html);
+var c_count = <%= @pic.comment_count %>;
+jQuery(".pic_comment_count_<%= @pic.id %>").html(c_count);
+jQuery(".ph_com_text_area").val("");
+jQuery(".photos_container").masonry( "reload" );
+<% else %>
+display_flash_message("<%= @comment.errors.first[1] %>");
+<% end %>

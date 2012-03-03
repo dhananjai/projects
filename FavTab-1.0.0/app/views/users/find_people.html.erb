@@ -1,0 +1,118 @@
+<%= javascript_include_tag 'find-people' %>
+
+<% @other_user = @login_user %>
+<div class="left_panel" align="center">
+  <%= render :partial => "user_left_panel" %>
+</div>
+<div class="main_panel">
+  <span class="orange_header">Find People</span>
+  <div class="find_people_form_div">
+    <%= form_tag "/users/find_people", :onSubmit => "return checkFindPeopleValidation()" do |f| %>
+      <table width="96%" class="profile_edit_form_table">
+        <tr>
+          <td  align="left" width="20%"><span class="form_field_name">Username:</span></td>
+          <td align="left" ><%= text_field_tag 'user[username]' %></td>
+        </tr>
+        <tr>
+          <td  align="left" width="20%"><span class="form_field_name">About Me:</span></td>
+          <td align="left" ><%= text_field_tag 'user[about_me]' %></td>
+        </tr>
+        <tr>
+          <td  align="left" width="20%"><span class="form_field_name">Tabs/Discussions:</span></td>
+          <td align="left" ><%= text_field_tag 'user[tab]' %></td>
+        </tr>
+        <tr>
+          <td  align="left" width="20%"><span class="form_field_name">Work History:</span></td>
+          <td align="left" ><%= text_field_tag 'user[work_info]' %></td>
+        </tr>
+        <tr>
+          <td  align="left" width="20%"><span class="form_field_name">Education:</span></td>
+          <td align="left" ><%= text_field_tag 'user[education]' %></td>
+        </tr>
+        <tr>
+          <td  align="left" width="20%"><span class="form_field_name">Age:</span></td>
+          <td align="left" >
+            <%#= select "user", "age_from", options_for_select((18..99)), {:prompt => 'Select Age'} %>
+            <%= text_field "user", "age_from",:style=>"width:30px;" %>
+            <span class="form_field_name inline_display" style="float:left;margin-top: 5px;">&nbsp;&nbsp;&nbsp;To&nbsp;&nbsp;&nbsp; </span>
+            <%#= select "user", "age_to", options_for_select((18..99)), {:prompt => 'Select Age'} %>
+            <%= text_field "user", "age_to" ,:style=>"width:30px;"%>
+          </td>
+        </tr>
+        <tr>
+        <td  align="left" width="30%"><span class="form_field_name">Sex:</span></td>
+        <td align="left" >
+          <span class="form_field_name inline_display">Male &nbsp;</span><span class="find_people_radio float_l inline_display"><%= radio_button_tag "user[sex]", 'male',:id=>"float_r" %>&nbsp;&nbsp;&nbsp;</span>
+          <span class="form_field_name inline_display">&nbsp;Female &nbsp;</span><span class="find_people_radio float_l inline_display"><%= radio_button_tag "user[sex]", 'female' %></span>
+        </td>
+      </tr>
+        <tr>
+          <td  align="left" width="20%"><span class="form_field_name">Internet Interest:</span></td>
+          <td align="left" ><%= text_field_tag 'user[interest_internet]' %></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><%#= submit_tag "Search", :class => "blue_btn", :id => "search_submit" %>
+          <input type="submit" class="blue_btn" style="" value="Search" id="search_submit"/>
+          </td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+  <% if !@users.empty? %>
+  <div id="search_result_div" style="display:block">
+    <span class="orange_header">Search Result</span>
+    <div class="search_results_scrolled_div">
+      <% for user in @users %>
+        <div class="search_result_users_div">
+          <a href="<%= get_user_by_user_id(user.id).profile_path %>" >
+           <img src="<%= get_user_by_user_id(user.id).profile_pic(:medium) %>" class="medium_user_image" /></a>
+          <!--img class="medium_user_image" src="/images/profile_image.jpg"/-->
+          <div class="search_result_users">
+            <span><a href="<%= get_user_by_user_id(user.id).profile_path %>" class="user_name" id="other_username" style="width: auto;clear: none;display: inline;" ><%= user.username %></a>&nbsp;&nbsp;<span class="normal_text" id="search_result"><%= (user.user_detail.about_me) if user.user_detail %></span></span>
+            <!--<span class="user_name" id="search_result"><a href="<%= get_user_by_user_id(user.id).profile_path %>" class="user_name" ><%= user.username %></a></span>
+            <span class="normal_text" id="search_result"><%= (user.user_detail.about_me) if user.user_detail %></span> -->
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+   <% end %>
+</div>
+
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    /*for css*/
+    doc_ht = jQuery(document).height();
+    jQuery(".background_wrapper").css('height',doc_ht+'px');
+    if(jQuery.browser.opera)
+    {
+      jQuery(".blue_btn").css('padding-bottom','2px');
+    }
+    /* UI Functionality */
+	apply_scroll_effects();
+        jQuery("input[type='radio']").removeAttr("checked")
+     <% if @users.empty? and flash[:notice] %>
+        display_flash_message("<%= flash[:notice]  %>");
+     <% end %>
+
+
+        $("#user_age_from,#user_age_to").keydown(function(event) {
+        // Allow: backspace, delete, tab and escape
+        if ( event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 ||
+             // Allow: Ctrl+A
+            (event.keyCode == 65 && event.ctrlKey === true) ||
+             // Allow: home, end, left, right
+            (event.keyCode >= 35 && event.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        else {
+            // Ensure that it is a number and stop the keypress
+            if ((event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105 )) {
+                event.preventDefault();
+            }
+        }
+       });
+  });
+</script>

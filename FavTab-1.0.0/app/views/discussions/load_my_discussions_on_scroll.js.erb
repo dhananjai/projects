@@ -1,0 +1,34 @@
+
+<%  if @discussions.blank? %>
+  jQuery("#my_discussion_loader").hide();
+  m_d_finish();
+<% else %>
+  var $output_html = jQuery("<%= escape_javascript(render :partial => "discussions_multiple", :locals=>{:discussions=>@discussions}).html_safe %>");
+  jQuery(".my_discussions_block .d_inner_div").append($output_html);
+
+  jQuery(".my_discussions_block").find(".show_rate_it").click(function(){
+            jQuery(this).next().toggle();
+  jQuery(this).text(jQuery(this).text() == 'Rate It' ? 'Cancel' : 'Rate It');
+          });
+
+
+  jQuery(".my_discussions_block").find('.rating_class').raty({
+                          click: function(score, evt) {
+                                  current_object = jQuery(this);
+                                  $(this).parent().submit();
+                          }
+                  });
+
+
+  jQuery(".my_discussions_block").find(".rating_container").each(function(v,i){
+          var value = jQuery(this).children("span").html();
+  if(!jQuery(this).children('.rating_class_fixed').children("img").size()>0)
+  {
+  jQuery(this).children('.rating_class_fixed').raty({
+                                          readOnly:	true,
+                                          start:		value
+                                  });
+  }
+
+  });
+<% end %>

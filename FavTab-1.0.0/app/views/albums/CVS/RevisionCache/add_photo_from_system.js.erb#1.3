@@ -1,0 +1,14 @@
+<% if @photo.errors.blank? %>
+  reset_remote_photo_from();
+  var $items = jQuery("<%= escape_javascript(render :partial=>"photo_block", :locals=>{:pic=>@photo}).html_safe %>");
+  jQuery(".photos_container").append($items).masonry( 'appended', $items, true );
+
+  jQuery(".photos").hover(function(){
+      jQuery(this).find(".photo_actions").show().animate({'height':'23px'},"fast");
+      },function(){
+      jQuery(this).find(".photo_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide();});
+  });
+  setTimeout('jQuery(".photos_container").masonry( "reload" );',500);
+  <% else %>
+  display_flash_message('<%= @photo.errors.first[1] %>');
+<% end %>

@@ -1,0 +1,39 @@
+<div class="albums" id="album_div_<%= album.id  %>">
+  <a class="album_name" href="<%= url_for :controller => "albums", :action => "show", :id => album.id %>"><div id="album_name_edit_<%= album.id %>"><%= album.name %></div></a>
+  <a class="album_prev" href="<%= url_for :controller => "albums", :action => "show", :id => album.id %>">
+    <% album.show_photo_per_album.each do |picture| %>
+      <%= image_tag picture.photo(:small), :class=>"album_prev_thumb" %>
+    <% end if !album.show_photo_per_album.blank?%>
+
+  </a>
+  <% if @login_user == @other_user %>
+  <div class="album_actions">
+
+    <a href="javascript:void(0);" class="album_action_link float_l" onclick='edit_album(<%= album.id  %>);'>Rename</a>
+
+    <!--a onclick="" class="album_action_link float_l" href="<%#= url_for :controller => "albums", :action => "edit_album", :id => album.id %>">Rename</a-->
+    <!--a class="float_r album_action_link" href="javascript:void(0);"-->
+      <!--img title="Remove" style="width: 10px; height: 10px;" src="/images/cross-icon.png?1326521089" alt="Cross-icon"/-->
+      <%= link_to image_tag('cross-icon.png?1326521089', :title=>"Remove", :style=>"width: 10px; height: 10px;"), {:controller=>'albums', :action=>'delete_album', :id=>album.id}, :confirm=>"Are you sure you want to delete?", :class=>"float_r album_action_link", :remote => true %>
+    <!--/a-->
+    <a id="share_with_group_link" class="album_action_link float_r" onclick="show_share_album_in_group_popup(<%= album.id %>);" href="javascript:void(0);">
+      <img width="13" height="10" title="Change Group" src="/images/group.png"/>
+      
+    </a>
+
+  </div>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+   function show_share_album_in_group_popup(album_id)
+   {
+      jQuery.get("/share_album_in_group/"+album_id,function(data){
+        //alert(data);
+        jQuery("body").append(data);
+        //jQuery("#share_with_group_popup #tab_id").val(tab_id);
+        jQuery("#share_with_group_popup .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#share_with_group_popup .pop_up").height())/2+"px"});
+        jQuery("#share_with_group_popup .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#share_with_group_popup .pop_up").width())/2+"px"});
+      });
+   }
+ </script>

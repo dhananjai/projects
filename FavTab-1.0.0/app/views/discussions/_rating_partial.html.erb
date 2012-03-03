@@ -1,0 +1,33 @@
+<!-- Ref:- http://eighty-b.tumblr.com/post/1569674815/creating-an-ajaxified-star-rating-system-in-rails-3 
+           https://github.com/azabaj/acts_as_rateable 
+           http://www.wbotelhos.com/raty/
+-->
+
+<% rating_class = rating_for.class == Comment ? "comment" : "discussion" 
+   my_rating = rating_for.rated_by?(@login_user) %>
+
+<!--User can't rate there own discussions/comments -->
+
+<div class="url_action_div no_left_padding" >
+  <div class="rating_container"><span class="hidden_element"><%= rating_for.average_rating %></span><div id="click" class="rating_class_fixed"></div></div>
+  <span class="comment_count">[ <%= rating_for.votes %> ] Votes</span>
+  <% unless @login_user.is_admin? %>
+    <% unless @login_user.is_rater?(rating_for) %>
+      <span class="link_seperator float_l">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+      <a class="discussion_action_link show_rate_it" href="javascript:void(0)" >Rate It</a>
+      <div class="hidden_element">
+      <% if my_rating %>
+        <div class="rating_container"><span class="hidden_element"><%= my_rating.rate.score %></span><div id="click" class="rating_class_fixed"></div></div>
+      <% else %>
+            <% form_tag("/users/#{rating_for.id}/rate", :remote => true, :html => { :class => 'rating_ballot' }) do |f| %>
+              <div id="click" class="rating_class"></div>
+              <%= hidden_field_tag("rating_for_id", rating_for.id) %>
+            <%= hidden_field_tag("rating_for_class", rating_class) %>
+          <% end %>
+      <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+

@@ -1,0 +1,23 @@
+<!-- Comment starts here  -->
+<% com_user = comment.user %>
+<div class="photo_comment photo_comment_<%= comment.id %>" style="position: relative;">
+  <% if comment.discussable.album.user_id==@login_user.id or comment.user_id==@login_user.id %>
+  <%=  link_to image_tag("cross-icon.png",:style=>"width: 10px; height: 10px;",:title=>"Delete",:alt=>"Delete"), {:action => 'delete_picture_comment', :id => comment.id }, :remote=>true, :class => "photo_delete_link" %>
+  <!--<a class="photo_delete_link" href="javascript:void(0);">
+        <img title="Remove" style="width: 10px; height: 10px;" onclick="delete_photo_comment(<%= comment.id %>);" src="/images/cross-icon.png" alt="Cross-icon"/>
+  </a>-->
+  <% end %>
+  <a href="<%= com_user.profile_path %>" class="ph_com_pr_pic">
+    <img src="<%= com_user.profile_pic(:small) %>" class="small_user_image float_l" title="<%= com_user.username %>" />
+  </a>
+  <span class="ph_com_texts">
+    <a href="#" class="ph_com_usr_name">
+      <%= com_user.username %>
+    </a>
+    <span class="ph_com_matter">
+      <%= comment.comment %>
+    </span>
+  </span>
+
+</div>
+<!-- Comment ends here  -->

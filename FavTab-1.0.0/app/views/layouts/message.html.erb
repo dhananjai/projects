@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Tabitt</title>
+    <%= stylesheet_link_tag "style" %>
+    <%= stylesheet_link_tag "reset" %>
+    <%= javascript_include_tag 'common' %>
+
+
+    <!-- START
+        PURPOSE:- Following js file is added for the autocomplete functionality
+        Added by:- Salil Gaikwad
+    -->
+    <% csrf_meta_tag %>
+    <script src="/javascripts/jquery.js" type="text/javascript"></script>
+    <script src="/javascripts/application.js" type="text/javascript"></script>
+    <%= javascript_include_tag 'jquery-1.7.1.js', 'jquery-ui-1.8.16.custom.min.js', 'rails.js' %>
+    <%= stylesheet_link_tag 'jquery-ui-1.8.16.custom.css' %>
+    <!-- END -->
+
+    <!--[if IE ]>
+	<link type="text/css" rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+  </head>
+  <body>
+    <div id="page_wrapper" align="center">
+      <div class="top_header_bg"></div>
+      <div style="width: 980px;">
+        <div class="background_wrapper float_l" align="center">
+          <div id="wrapper" class="float_l">
+            <div class="header_container">
+              <ul class="top_header_menu">
+                  <% if current_user %>
+                <li><a href="/users/profile/<%= current_user.id %>">Tabs</a></li>
+                <li><a href="/discussions">Discussion</a></li>
+                <li><a href="/photo_discussions">Photos</a></li>
+                <li><a href="/users/find_people">Find People</a></li>
+                <li><a href="/messages" class="current_page_tab">Messages</a></li>
+                <li><a href="/logout">Log Out</a></li>
+                <% else %>
+                <li><a href="#" class="current_page_tab">Tabs</a></li>
+                <li><a href="#">Discussion</a></li>
+                <li><a href="#">Find People</a></li>
+                  <li><a href="#">Messages</a></li>
+                <% end %>
+              </ul>
+            </div>
+            <div class="body_container">
+              <div class="left_panel" align="center">
+                <ul class="message_menu_ul">
+                  <li id="inbox_div"><%= link_to "Inbox", {:action => "index"}, {:class =>"menu_item"} %></li>
+                  <li id="new_message_div"><%= link_to "New Message", {:action => "new_message"}, {:class => "menu_item"} %></li>
+                  <li id="sent_message_div"><%= link_to "Sent Message", {:action => "sent_messages"}, {:class => "menu_item"} %></li>
+                </ul>
+              </div>
+
+                <%= yield %>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+	<div style="width:100%; display:block;">
+	<div class="footer_container">
+	    <%= render :partial => "/layouts/footer" %>
+	  </div>
+	</div>
+    </div>
+    <%= render :partial => "discussions/flash_message", :layout => false %>
+  </body>
+  <script type="text/javascript">
+	jQuery(document).ready(function(){
+		/*for css*/
+		
+		if(jQuery.browser.opera)
+		{
+			jQuery(".blue_btn").css('padding-bottom','2px');
+		}
+
+	});
+    <% if flash[:notice] || flash[:error] %>
+      <% @messages = (flash[:notice])? flash[:notice] : flash[:error] %>
+      display_flash_message("<%= escape_javascript(@messages).html_safe %>")
+      <% flash[:notice] = nil %>
+      <% flash[:error] = nil %>
+    <% end %>
+  </script>
+ 
+</html>

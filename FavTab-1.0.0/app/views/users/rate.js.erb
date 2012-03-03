@@ -1,0 +1,25 @@
+var comments_html = ("<%= escape_javascript(render :partial => "/discussions/rating_partial", :locals=>{:rating_for=>@rate}).html_safe %>");
+
+var main_parent = current_object.parent().parent().parent().parent();
+
+main_parent.html(comments_html);
+
+main_parent.find('.rating_class').raty({
+click: function(score, evt) {
+current_object = jQuery(this);
+$(this).parent().submit();
+}
+});
+
+
+main_parent.find(".rating_container").each(function(v,i){
+var value = jQuery(this).children("span").html();
+jQuery(this).children('.rating_class_fixed').raty({
+readOnly:	true,
+start:		value
+});
+});
+<% if @rate.class.to_s=="Discussion" %>
+  var $user = jQuery('<a href="<%= @login_user.profile_path %>" class="liker_<%= @login_user.id %>"><img src="<%= @login_user.profile_pic(:small) %>" class="small_user_image float_l" title="<%= @login_user.username %>" /></a>');
+  jQuery(".discussion_raters_<%= @rate.id %>").append($user);
+<% end %>

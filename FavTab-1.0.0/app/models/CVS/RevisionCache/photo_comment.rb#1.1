@@ -1,0 +1,4 @@
+class PhotoComment < ActiveRecord::Base
+  belongs_to :user
+  belongs_to :discussable, :polymorphic => true
+end

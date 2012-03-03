@@ -1,0 +1,60 @@
+<!-- Photo starts here -->
+<div class="photos picture_<%= pic.id %>">
+  <div class="photo_actions">
+    <% if pic.album.user_id!=@login_user.id %>
+      <%  if !pic.is_liked_by(@login_user.id) %>
+        <%=  link_to 'Like', {:action => 'like_picture', :id => pic.id }, :remote=>true, :class => "album_action_link float_l like_link_#{pic.id}" %>
+      <% else %>
+        <%=  link_to 'Unlike', {:action => 'unlike_picture', :id => pic.id }, :remote=>true, :class => "album_action_link float_l like_link_#{pic.id}" %>
+      <% end %>
+    <% host_url = "http://"+request.host_with_port %>
+    <a href="javascript:void(0);" onclick="import_picture(<%= pic.id %>)" class="album_action_link float_l" >Import</a>
+    <% else %>
+      <a class="float_r album_action_link" href="javascript:void(0);">
+        <img title="Remove" style="width: 10px; height: 10px;" onclick="delete_picture(<%= pic.id %>);" src="/images/cross-icon.png" alt="Cross-icon"/>
+      </a>
+      <a id="share_with_group_link" class="album_action_link float_r" onclick="show_share_photo_in_group_popup(<%= pic.id %>);" href="javascript:void(0);">
+        <img width="13" height="10" title="Change Group" src="/images/group.png"/>
+      </a>
+    <% end %>
+  </div>
+  <div class="photo_pic_conatiner float_l">
+    <a href="javascript:void(0);" class="float_l" onclick="display_image_full_detail(<%= pic.id %>);">
+      <img src="<%=host_url%><%= pic.photo(:medium) %>" class="photo_pic" />
+    </a>
+    <!--<img src="/images/test_mage.jpg" class="photo_pic"/></a>-->
+    <span class="image_detail"><%= pic.photo_detail %> </span>
+    <% if !pic.site_name.nil? %><span class="image_detail">Added from <a class="site_name" href="http://<%=pic.site_name%>" target="_blank"><%= pic.site_name %></a> </span><%end%>
+    <span class="image_detail small_font">
+      <span class="pic_count_<%= pic.id %>" > <%= pic.like_count %></span> Like | <span class="pic_comment_count_<%= pic.id %>" ><%= pic.comment_count %></span> Comments
+    </span>
+  </div>
+  <div class="photos_comment_div float_l photos_comment_div_<%= pic.id %>">
+    <% pic.photo_comments.each do |p_c| %>
+      <%= render :partial => "photo_comment_block", :locals=>{:comment=>p_c} %>
+    <% end %>
+    
+  </div>
+  <div class="ph_post_com_div">
+      <%= form_for :photos, :url=>{:controller=>:albums, :action => 'post_photo_comment'},:remote=>true do |f|  %>
+        <textarea name="comment" class="ph_com_text_area"></textarea>
+      <input type="hidden" name="picture_id" value="<%= pic.id %>"/>
+      <input type="submit" value="Post"  class="float_r" onclick="return check_phot_comment_form(jQuery(this));" />
+      <!--  <a onclick="" class="blue_btn clear_both float_r padding_top_six center_text">Post Comment</a>-->
+      <% end %>
+    </div>
+</div>
+<!-- Photo ends here -->
+<script type="text/javascript">
+  var added_from_site = false;
+function show_share_photo_in_group_popup(pic_id)
+   {
+      jQuery.get("/share_photo_in_group/"+pic_id,function(data){
+        //alert(data);
+        jQuery("body").append(data);
+        //jQuery("#share_with_group_popup #tab_id").val(tab_id);
+        jQuery("#share_with_group_popup .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#share_with_group_popup .pop_up").height())/2+"px"});
+        jQuery("#share_with_group_popup .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#share_with_group_popup .pop_up").width())/2+"px"});
+      });
+   }
+</script>

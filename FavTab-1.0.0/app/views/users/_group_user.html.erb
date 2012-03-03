@@ -1,0 +1,9 @@
+<div class="group_user_<%= g_u.id %> follower_following_img_block" style="height: 52px;">
+  <span class="foll_action_span">
+    <a id="share_with_group_link" class="discussion_action_link foll_group_manage" href="javascript:void(0);" onclick="add_to_group(<%= g_u.user.id %>);" ><img src="/images/group.png" width="13" height="10" title="Change Group"/></a>
+    <%= link_to image_tag("/images/cross-icon.png",:style=>"width:10px;height:10px;"), {:controller=>'users', :action=>'remove_from_group',:id=>g_u.id},:id=>"remove_user", :class=>"discussion_action_link delete_follower",:confirm=>"Are you sure you want to remove?", :remote => true,:title=>"Remove" %>
+    <!--<a class="discussion_action_link delete_follower" onclick="remove_from_group(<%= g_u.id %>);" href="javascript:void(0);"><img src="/images/cross-icon.png" title="Remove"/></a>-->
+  </span>
+  <a  href="<%= get_user_by_user_id(g_u.user.id).profile_path %>">
+    <img src="<%= g_u.user.profile_pic(:medium) %>" class="medium_user_image" title="<%= g_u.user.username %>" /></a>
+</div>

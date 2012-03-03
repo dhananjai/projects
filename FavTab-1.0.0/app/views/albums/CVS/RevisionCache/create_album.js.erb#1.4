@@ -1,0 +1,13 @@
+<% if @album.id %>
+jQuery('#no_album_error').html('');
+  var $output_html = jQuery("<%= escape_javascript(render :partial => "album", :locals=>{:album => @album}).html_safe %>");
+  jQuery("#create_group_popup").fadeOut(function(){
+    jQuery("#groups_container").append($output_html);
+    $output_html.hover(function(){
+      jQuery(this).find(".album_actions").show().animate({'height':'15px'},"fast");
+    },function(){
+      jQuery(this).find(".album_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide()});
+    });
+  });
+  <% end %>
+display_flash_message("<%= escape_javascript(@notice).html_safe %>");

@@ -1,0 +1,46 @@
+<!-- Photo starts here -->
+<div class="photos picture_<%= pic.id %>">
+  <div class="photo_actions">
+    <% if pic.album.user_id!=@login_user.id %>
+      <%  if !pic.is_liked_by(@login_user.id) %>
+        <%=  link_to 'Like', {:action => 'like_picture', :id => pic.id }, :remote=>true, :class => "album_action_link float_l like_link_#{pic.id}" %>
+      <% else %>
+        <%=  link_to 'Unlike', {:action => 'unlike_picture', :id => pic.id }, :remote=>true, :class => "album_action_link float_l like_link_#{pic.id}" %>
+      <% end %>
+      <a href="javascript:void(0);" class="album_action_link float_l" >Import</a>
+    <% else %>
+      <a class="float_r album_action_link" href="javascript:void(0);">
+        <img title="Remove" style="width: 10px; height: 10px;" onclick="delete_picture(<%= pic.id %>);" src="/images/cross-icon.png" alt="Cross-icon"/>
+      </a>
+      <a id="share_with_group_link" class="album_action_link float_r" onclick="" href="javascript:void(0);">
+        <img width="13" height="10" title="Change Group" src="/images/group.png"/>
+      </a>
+    <% end %>
+  </div>
+  <div class="photo_pic_conatiner float_l">
+    <a href="javascript:void(0);" class="float_l" onclick="display_image_full_detail(<%= pic.id %>);">
+      <img src="<%= pic.photo(:medium) %>" class="photo_pic" />
+    </a>
+    <!--<img src="/images/test_mage.jpg" class="photo_pic"/></a>-->
+    <span class="image_detail"><%= pic.photo_detail %> </span>
+    <% if !pic.site_name.nil? %><span class="image_detail">Added from <a class="site_name" href="http://<%=pic.site_name%>" target="_blank"><%= pic.site_name %></a> </span><%end%>
+    <span class="image_detail small_font">
+      <span class="pic_count_<%= pic.id %>" > <%= pic.like_count %></span> Like | 6 Comments
+    </span>
+  </div>
+  <div class="photos_comment_div float_l">
+
+    <%= render :partial => "photo_comment_block" %>
+
+    <div class="ph_post_com_div">
+      <textarea name="" class="ph_com_text_area">
+      </textarea>
+      <a onclick="" class="blue_btn clear_both float_r padding_top_six center_text">Post Comment</a>
+    </div>
+  </div>
+</div>
+<!-- Photo ends here -->
+<script type="text/javascript">
+  var added_from_site = false;
+
+</script>

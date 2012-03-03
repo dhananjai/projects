@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Tab:</b>
+  <%= @tab_site.tab_id %>
+</p>
+
+<p>
+  <b>Site url:</b>
+  <%= @tab_site.site_url %>
+</p>
+
+
+<%= link_to 'Edit', edit_tab_site_path(@tab_site) %> |
+<%= link_to 'Back', tab_sites_path %>

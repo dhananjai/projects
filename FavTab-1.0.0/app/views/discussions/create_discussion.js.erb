@@ -1,0 +1,31 @@
+<% if @message =="Discussion posted sucessfully." %>
+var comments_html = ("<%= escape_javascript(render :partial => "simple_discussion_block", :locals=>{:discussion=>@lastest_discussion[0]}).html_safe %>");
+jQuery("#discuss_a_web_page_div").find(".url_block").html(comments_html);
+jQuery("#discuss_a_web_page_div").find(".my_discussions_block").children(":first-child").after(comments_html);
+jQuery("#discussion_url").val("");
+
+jQuery("#discuss_a_web_page_div .url_block,#discuss_a_web_page_div .my_discussions_block").children(":first-child").find(".show_rate_it").click(function(){
+	  jQuery(this).next().toggle();
+          jQuery(this).text(jQuery(this).text() == 'Rate It' ? 'Cancel' : 'Rate It');
+	});
+        var current_object = null;
+
+jQuery("#discuss_a_web_page_div .discussion_<%= @lastest_discussion[0].id %>").find('.rating_class').raty({
+			click: function(score, evt) {
+				current_object = jQuery(this);
+				$(this).parent().submit();
+			}
+		});
+
+
+jQuery("#discuss_a_web_page_div .discussion_<%= @lastest_discussion[0].id %>").find(".rating_container").each(function(v,i){
+	var value = jQuery(this).children("span").html();
+	jQuery(this).children('.rating_class_fixed').raty({
+					readOnly:	true,
+					start:		value
+				});
+});
+set_effects();
+<% end %>
+jQuery("#discussion_error_msg").remove();
+display_flash_message("<%= escape_javascript(@message).html_safe %>");

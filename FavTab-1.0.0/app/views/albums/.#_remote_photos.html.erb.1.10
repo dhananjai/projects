@@ -1,0 +1,166 @@
+
+<script type="text/javascript" src="/javascripts/jquery.ui.selectmenu.js"></script>
+<link type="text/css" rel="stylesheet" media="screen" href="/stylesheets/jquery.ui.selectmenu.css"></link>
+
+<div class="grey_overlay" id="show_remote_photos">
+  <div class="pop_up" style="height: 315px;width: 450px;" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="reset_remote_photo_from();jQuery('#show_remote_photos').fadeOut();" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content" style="width: 395px;">
+        <span class="popup_heading clear_both">Add Photo</span>
+        <div class="rem_find_ph_form">
+          <%= form_for :photos, :url=>{:controller=>:albums, :action => 'find_photo'},:remote=>true do |f|  %>
+            <table width="100%" class="popup_form_table">
+              <tr>
+                <td  align="left"><%= text_field 'photos','site_url', :style=>"width:280px",:id=>"site_url_prev" %><br/><span class="form_error siteurlError"></span></td>
+                <td align="left" ><input id="find_photo_btn" type="submit" class="blue_btn" value="Find" onclick="return check_photo_url('prev');" /></td>
+              </tr>
+            </table>
+          <% end %>
+        </div>
+        <div id="remote_photo_add" class="remote_ph_prev">
+          <table width="100%">
+            <tr>
+              <td width="10%">
+                <a href="javascript:void(0);" class="ph_navigator" onclick="prev_photo();"><</a>
+              </td>
+              <td>
+                <div class="rem_ph_div">
+                  <img src="" class="current"/>
+                </div>
+              </td>
+              <td align="right" width="10%">
+                <a href="javascript:void(0);" class="ph_navigator" onclick="next_photo();">></a>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <%= form_for :photos, :url=>{:controller=>:albums, :action => 'add_photo'},:remote=>true do |f|  %>
+        <div class="add_rem_ph_form">
+          <label for="album">Select an Album:</label>
+          <select  name="album_id" id="album_select_menu">
+            <option value="none">Select Album</option>
+            <% @album.each do |a| %>
+              <option value="<%= a.id %>" <% if params[:id].to_i== a.id %>selected<% end %> ><%= a.name %></option>
+            <% end %>
+          </select><br/>
+          <span id="album_error" class="form_error"></span>
+          <label for="album">Details:</label>
+          <textarea id="photo_detail" class="phot_details_text" name="photo_detail"> </textarea>
+          <span id="photo_detail_error" class="form_error"></span>
+          <input type="hidden" name="photo_url" value="" id="photo_url_field" />
+          <input type="hidden" name="current_album_id" value="<%= params[:id] %>" id="photo_url_field" />
+        </div>
+        <div id="remote_add_photos_share_with_group" class="clear_both ph_privacy_options_div">
+          <span class="ph_privacy_options"><input id="remote_private_share_photo" checked name="share_type" type="radio" class="float_l" onclick="jQuery('.groups').hide();jQuery('#show_remote_photos .pop_up').css('height','315px');jQuery('#show_remote_photos .pop_up').center();" value="1" /><label>Private</label> </span>
+            <span class="ph_privacy_options"><input id="remote_public_share_photo" name="share_type" type="radio" class="float_l public_radio" onclick="jQuery('.groups').hide();jQuery('#show_remote_photos .pop_up').css('height','315px');jQuery('#show_remote_photos .pop_up').center();"  value="0" /><label>Public</label> </span>
+            <span class="ph_privacy_options"><input id="remote_share_with_grp_chk" name="share_type" type="radio" class="float_l" onclick="fetch_my_groups()"  value="2"  /><label>Share With Groups</label> </span>
+          <br/><br/>
+          <span class="form_error" id="remote_photo_group_error"></span>
+          <div class="groups float_l" style="display: none;width:398px;" align="left"></div>
+          <input id="" type="submit" class="blue_btn clear_both" value="Add" onclick="return check_add_remote_photo_form()" />
+        </div>
+        <% end  %>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  
+  jQuery(document).ready(function(){
+    jQuery("#show_remote_photos .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#show_remote_photos .pop_up").height())/2+"px"});
+    jQuery("#show_remote_photos .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#show_remote_photos .pop_up").width())/2+"px"});
+    jQuery('#album_select_menu').selectmenu();
+  });
+
+  function fetch_my_groups()
+  {
+    jQuery.get("/load_my_groups",function(data){
+      jQuery("#show_remote_photos .pop_up").css("height","445px")
+      jQuery("#show_remote_photos .groups").show();
+      jQuery("#show_remote_photos .groups").html(data);
+      jQuery('#show_remote_photos .pop_up').center();
+    });
+  }
+  
+  function next_photo()
+  {
+    var $imgs = jQuery("#show_remote_photos div.rem_ph_div img.current");
+    $imgs.removeClass("current");
+    $imgs.next().addClass("current");
+    if(jQuery("#show_remote_photos div.rem_ph_div img.current").size()==0)
+    {
+      jQuery("#show_remote_photos div.rem_ph_div img:first").addClass("current");
+    }
+    jQuery("#photo_url_field").val(jQuery("#show_remote_photos div.rem_ph_div img.current").attr('src'));
+  }
+
+  function prev_photo()
+  {
+    var $imgs = jQuery("#show_remote_photos div.rem_ph_div img.current");
+    $imgs.removeClass("current");
+    $imgs.prev().addClass("current");
+    if(jQuery("#show_remote_photos div.rem_ph_div img.current").size()==0)
+    {
+      jQuery("#show_remote_photos div.rem_ph_div img:last").addClass("current");
+    }
+    jQuery("#photo_url_field").val(jQuery("#show_remote_photos div.rem_ph_div img.current").attr('src'));
+  }
+  function check_add_remote_photo_form()
+  {
+    jQuery(".form_error").html("");
+    var image_url = jQuery("#photo_url_field");
+    var img_detail = jQuery("#photo_detail");
+    var album = jQuery("#album_select_menu");
+    var flag = true;
+    if(image_url.val().length==0)
+    {
+      flag=false;
+      alert("Please chose picture to add.")
+    }
+    if(album.val()=="none")
+    {
+      flag=false;
+      jQuery("#album_error").html("Please select an album.");
+    }
+    if(jQuery.trim(img_detail.val()).length==0)
+    {
+      flag=false;
+      
+      jQuery("#photo_detail_error").html("Please enter photo details.");
+      //img_detail.next(".form_error").html("Please enter photo details.");
+    }
+    else
+    {
+      if(img_detail.val().length>500)
+      {
+        flag=false;
+        jQuery("#photo_detail_error").html("Photo details should be of maximum 500 characters.");
+        //img_detail.next(".form_error").html("Photo details should be of maximum 500 characters.");
+      }
+    }
+    if(jQuery("#remote_share_with_grp_chk").attr("checked")=="checked" && jQuery("#show_remote_photos .groups_container input[type='checkbox']:checked").length==0)
+    {
+      flag=false;
+      jQuery("#remote_photo_group_error").html("Please select at least one group.");
+    }
+
+    return flag;
+  }
+
+  function reset_remote_photo_from()
+  {
+    jQuery("#show_remote_photos").hide();
+    jQuery("#site_url_prev, #photo_detail").val("");
+    jQuery("#show_remote_photos input.public_radio").attr("checked","true");
+  }
+</script>
+
+<style>
+  body {font-size: 11px ; font-family:"Verdana",sans-serif; }
+  fieldset { border:0; }
+  label,select,.ui-select-menu { float: left; margin-right: 10px; }
+  select { width: 200px; }
+  .wrap ul.ui-selectmenu-menu-popup li a { font-weight: bold; }
+</style>

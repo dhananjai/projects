@@ -1,0 +1,8 @@
+display_flash_message("<%=  @message.nil? ? "The user is not present." : (@message.errors.present? ? @message.errors.full_messages.to_sentence : 'Message sent successfully.')  %>");
+<% if !@message.errors.present? %>
+jQuery(".reply_message_text_area").val("");
+jQuery("#recievers_text_box").val("");
+jQuery("#message_message").val("");
+<% end %>
+jQuery("#reply_msg_box_"+curr_object).hide();
+jQuery("#reply_msg_box_"+curr_object).prev().children(".message_action_div").children("a.reply_link").html("Reply");

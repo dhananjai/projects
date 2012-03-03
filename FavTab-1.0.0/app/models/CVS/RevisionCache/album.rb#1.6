@@ -1,0 +1,6 @@
+class Album < ActiveRecord::Base
+  has_many :pictures,:dependent => :destroy
+  belongs_to :user
+  
+  validates :name, :presence => {:message => "Cann't be blank. "}, :length => {:maximum => 20}, :uniqueness => {:scope => :user_id}
+end

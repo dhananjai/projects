@@ -1,0 +1,6 @@
+var $new_link = jQuery("<%= escape_javascript(link_to 'Unlike', {:action => 'unlike_picture', :id => params[:id] }, :remote=>true, :class => "album_action_link float_l like_link_#{params[:id]}").html_safe %>");
+jQuery(".like_link_"+<%= params[:id] %>).replaceWith($new_link);
+var $user = jQuery('<a href="<%= @login_user.profile_path %>" class="liker_<%= @login_user.id %>"><img src="<%= @login_user.profile_pic(:small) %>" class="small_user_image float_l" title="<%= @login_user.username %>" /></a>');
+jQuery(".photos_likers_container_<%= params[:id] %>").append($user);
+var l_count = <%= @pic.like_count %>;
+ jQuery(".pic_count_<%= params[:id] %>").html(l_count)

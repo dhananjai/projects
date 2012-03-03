@@ -1,0 +1,140 @@
+<% feeds.each do |feed| %>
+    <!-- feed start here -->
+    <% if feed.class.to_s == "FollowerFollowing" %>
+      <div class="outer_comment_div float_l clear_both no_left_padding">
+        <div class="float_l">
+          <a href="#" class="toggle_comment margin_top_five">&nbsp;</a>
+        </div>
+        <div class="float_l user_image_div">
+          <a href="<%= get_user_by_user_id(feed.follower_id).profile_path %>">
+            <img alt="" class="medium_user_image" src="<%= get_user_by_user_id(feed.follower_id).profile_pic(:medium) %>"/></a>
+        </div>
+        <div class="comment_detail_div">
+          <a href="<%= get_user_by_user_id(feed.follower_id).profile_path %>" class="user_name float_l"><%= feed.follower.username %></a>
+          <span class="comment_text">
+            is now following &nbsp;<a href="<%= get_user_by_user_id(feed.following_id).profile_path %>" class="user_name" style="display: inline"><%= feed.following.username %></a>
+             <%#= feed.created_at %>
+          </span>
+
+        </div>
+      </div>
+    <% end %>
+    <!-- feed ends here -->
+
+    <!-- feed start here -->
+    <% if feed.class.to_s == "TabSite" %>
+      <div class="outer_comment_div float_l no_left_padding clear_both">
+        <div class="float_l">
+          <a href="#" class="toggle_comment margin_top_five">&nbsp;</a>
+        </div>
+        <div class="float_l user_image_div">
+          <a href="<%= get_user_by_user_id(feed.tab.user.id).profile_path %>">
+            <img alt="" class="medium_user_image" src="<%= get_user_by_user_id(feed.tab.user.id).profile_pic(:medium) %>"/></a>
+        </div>
+        <div class="comment_detail_div">
+          <a href="<%= get_user_by_user_id(feed.tab.user.id).profile_path %>" class="user_name float_l"><%= feed.tab.user.username %></a>
+          <span class="comment_text">
+            <span class="discussion_tab_name">
+              added <a href="<%= feed.site_url %>" target="_blank" class="discussion_url_links">
+                <%= feed.site_title %></a></span> to <%= feed.tab.name %>
+                <%#= feed.created_at %>
+          </span>
+        </div>
+      </div>
+    <% end %>
+    <!-- feed ends here -->
+    <!-- feed start here -->
+    <% if feed.class.to_s == "Comment" %>
+      <div class="outer_comment_div no_left_padding float_l clear_both">
+        <div class="float_l">
+          <a href="#" class="toggle_comment expand_btn margin_top_five">&nbsp;</a>
+        </div>
+        <div class="float_l user_image_div">
+          <a href="<%= get_user_by_user_id(feed.user.id).profile_path %>">
+            <img alt="" class="medium_user_image" src="<%= get_user_by_user_id(feed.user.id).profile_pic(:medium) %>"/></a>
+        </div>
+        <div class="comment_detail_div">
+          <a href="<%= get_user_by_user_id(feed.user.id).profile_path %>" class="user_name float_l"><%= feed.user.username %></a>
+          <span class="comment_text">
+            commented on <a class="discussion_url_links" target="_blank" href="<%= feed.discussion.url %>"><%= feed.discussion.site_title %></a>
+            <%#= feed.created_at %>
+          </span>
+        </div>
+        <div class="comments_div">
+          <%= render :partial=>"inner_comment", :locals=>{:response=>feed,:is_creating=>false} %>
+        </div>
+      </div>
+
+    <% end %>
+    <!-- inner Comment end here-->
+    <!-- feed ends here -->
+
+    <!-- feed start here -->
+    <% if feed.class.to_s == "UserDiscussion" %>
+    <div class="outer_comment_div float_l clear_both no_left_padding discussion_feed_<%= feed.discussion.id %>">
+        <div class="float_l">
+          <a href="#" class="toggle_comment margin_top_five">&nbsp;</a>
+        </div>
+        <div class="float_l user_image_div">
+          <a href="<%= get_user_by_user_id(feed.user.id).profile_path %>">
+            <img alt="" class="medium_user_image" src="<%= get_user_by_user_id(feed.user.id).profile_pic(:medium) %>"/></a>
+        </div>
+        <div class="comment_detail_div">
+          <a href="<%= get_user_by_user_id(feed.user.id).profile_path %>" class="user_name float_l"><%= feed.user.username %></a>
+          <span class="comment_text">
+            is discussing <a class="discussion_url_links" target="_blank" href="<%= feed.discussion.url %>"><%= feed.discussion.site_title %></a>
+            <% unless @login_user.is_discussed?(feed.discussion.id) %>
+            <div class="join_d"><%= link_to "Join Discussion", {:controller => "discussions", :action => "join_discussion", :id => feed.discussion.id},
+                  :remote => true, :class => "delete_join_discussion discussion_action_link"   %></div>
+            <% end %>
+            <%#= feed.created_at %>
+          </span>
+        </div>
+      </div>
+    <% end %>
+
+    <% if feed.class.to_s == "Tab" %>
+      <div class="outer_comment_div float_l clear_both no_left_padding">
+        <div class="float_l">
+          <a href="#" class="toggle_comment margin_top_five">&nbsp;</a>
+        </div>
+        <div class="float_l user_image_div">
+          <a href="<%= get_user_by_user_id(feed.user.id).profile_path %>">
+            <img alt="" class="medium_user_image" src="<%= get_user_by_user_id(feed.user_id).profile_pic(:medium) %>"/></a>
+        </div>
+        <div class="comment_detail_div">
+          <a href="<%= get_user_by_user_id(feed.user.id).profile_path %>" class="user_name float_l"><%= feed.user.username %></a>
+          <span class="comment_text">
+            has shared <%= feed.name %> Tab List.
+            <%#= feed.created_at %>
+          </span>
+
+        </div>
+      </div>
+    <% end %>
+
+    <% if feed.class.to_s == "Picture" %>
+      <div class="outer_comment_div float_l clear_both no_left_padding">
+        <div class="float_l">
+          <a href="#" class="toggle_comment margin_top_five">&nbsp;</a>
+        </div>
+        <div class="float_l user_image_div">
+          <a href="<%= feed.album.user.profile_path %>">
+            <img alt="" class="medium_user_image" src="<%= get_user_by_user_id(feed.album.user_id).profile_pic(:medium) %>"/></a>
+        </div>
+        <div class="comment_detail_div">
+          <a href="<%= get_user_by_user_id(feed.album.user_id).profile_path %>" class="user_name float_l"><%= feed.album.user.username %></a>
+          <span class="comment_text">
+            <span class="clear_both"> has added photo.</span>
+            <% host_url = "http://"+request.host_with_port %>
+            <a href="javascript:void(0);" class="float_l" onclick="display_image_full_detail(<%= feed.id %>);">
+              <img src="<%=host_url%><%= feed.photo(:medium) %>" class="photo_feed_pic" />
+            </a>
+            <%#= feed.created_at %>
+          </span>
+
+        </div>
+      </div>
+    <% end %>
+    <!-- feed ends here -->
+  <% end if @feeds%>

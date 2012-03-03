@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" class="no-js">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Tabitt</title>
+
+    <%= stylesheet_link_tag "style" %>
+    <%= stylesheet_link_tag "reset" %>
+    <%= javascript_include_tag 'common' %>
+
+    <% csrf_meta_tag %>
+    <script src="/javascripts/jquery.js" type="text/javascript"></script>
+    <script src="/javascripts/application.js" type="text/javascript"></script>
+    <%= javascript_include_tag 'jquery-1.7.1.js', 'jquery-ui-1.8.16.custom.min.js', 'rails.js' %>
+    <script type="text/javascript" src="/javascripts/modernizr.custom.68646.js"></script>
+    <%= stylesheet_link_tag 'jquery-ui-1.8.16.custom.css' %>
+    <%= javascript_include_tag 'jquery.validate.js' %>
+    <script type="text/javascript" src="/javascripts/jquery.raty.js"></script>
+    <script type="text/javascript" src="/javascripts/jquery.center.js"></script>
+    <!--[if IE ]>
+	<link type="text/css" rel="stylesheet" href="/stylesheets/ie.css">
+    <![endif]-->
+            <%#= javascript_tag '$.fx.off = true;' if Rails.env.test? %>
+  </head>
+  <body>
+    <div id="page_wrapper" align="center">
+      <div class="top_header_bg"></div>
+      <div style="width: 980px;">
+        <div class="background_wrapper float_l" align="center">
+          <div id="wrapper" class="float_l">
+            <div class="header_container">
+              <ul class="top_header_menu">
+                <% if current_user %>
+                  <li><a href="/users/profile/<%= current_user.id %>" class='<%= top_menu(params, "tabs") %>'>Tabs</a></li>
+                  <li><a href="/discussions" class='<%= top_menu(params, "discussions") %>'>Discussion</a></li>
+                  <li><a href="/photo_discussions" class='<%= top_menu(params, "photo_discussions") %>'>Photos</a></li>
+                  <li><a href="/users/find_people" class='<%= top_menu(params, "find_people") %>'>Find People</a></li>
+                  <li><a href="/messages" class='<%= top_menu(params, "messages") %>'>Messages</a></li>
+                  <li><a href="/logout">Log Out</a></li>
+                <% else %>
+                  <li><a href="/users/profile/guest_user" class="current_page_tab">Tabs</a></li>
+                  <li><a href="/discussions">Discussion</a></li>
+                  <li><a href="/users/find_people" class='<%= top_menu(params, "find_people") %>'>Find People</a></li>
+                  <li><a href="/messages" class='<%= top_menu(params, "messages") %>'>Messages</a></li>
+                <% end %>
+              </ul>
+            </div>
+            <div class="body_container">
+              <%= yield %>
+            </div>
+            <!-- footer container was here -->
+          </div>
+
+        </div>
+      </div>
+      <div style="display:block;clear: both;width: 100%;" align="center">
+        <div class="footer_container">
+          <%= render :partial => "/layouts/footer" %>
+        </div>
+      </div>
+    </div>
+
+
+    <%= render :partial => "discussions/flash_message", :layout => false %>
+    <%= render :partial => "discussions/ajax_loading_popup", :layout => false %>
+  </body>
+
+
+  <!-- Call error message function stars here -->
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+      /*for css*/
+		
+      if(jQuery.browser.opera)
+      {
+        jQuery(".blue_btn").css('padding-bottom','2px');
+      }
+
+    });
+
+<% if flash[:notice] || flash[:error] %>
+  <% @messages = (flash[:notice])? flash[:notice] : flash[:error] %>
+    display_flash_message("<%= escape_javascript(@messages).html_safe %>")
+  <% if flash[:forget_pw__error] %>
+      jQuery("#forgot_password_div").show();
+      jQuery("#sign_in_div").hide();
+  <% end %>
+  <% flash[:notice] = nil %>
+  <% flash[:error] = nil %>
+<% end %>
+  </script>
+  <script>
+    jQuery(document).ready(function(){
+      /* for rating */
+      jQuery('.show_rate_it').live("click" , function() {
+        jQuery(this).next().toggle();
+        jQuery(this).text(jQuery(this).text() == 'Rate It' ? 'Cancel' : 'Rate It');
+      });
+
+      jQuery('.rating_class').each(function(v,i){
+        if(!jQuery(this).children("img").size()>0)
+        {
+          jQuery(this).raty({
+            click: function(score, evt) {
+              current_object = jQuery(this);
+              $(this).parent().submit();
+            }
+          });
+        }
+
+      });
+
+
+      jQuery(".rating_container").each(function(v,i){
+        var value = jQuery(this).children("span").html();
+        if(!jQuery(this).children('.rating_class_fixed').children("img").size()>0)
+        {
+          jQuery(this).children('.rating_class_fixed').raty({
+            readOnly:	true,
+            start:		value
+          });
+        }
+
+      });
+
+
+      /* end */
+
+    });
+  </script>
+
+</html>

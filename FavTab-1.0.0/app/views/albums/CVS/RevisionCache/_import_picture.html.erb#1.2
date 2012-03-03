@@ -1,0 +1,107 @@
+<script type="text/javascript" src="/javascripts/jquery.ui.selectmenu.js"></script>
+<link type="text/css" rel="stylesheet" media="screen" href="/stylesheets/jquery.ui.selectmenu.css"></link>
+<div class="grey_overlay" id="import_photo_popup" style="display: block;">
+  <div class="pop_up" style="height: 370px;width: 344px;" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery('#import_photo_popup').fadeOut().remove();" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content">
+        <span class="popup_heading">Import Photo</span>
+        <div class="rem_ph_div">
+          <img src="<%= @photo_url %>" class="current"/>
+        </div>
+        <div>
+          <%= form_for :photos, :url=>{:controller=>:albums, :action => 'import_picture'},:html=>{:id=>"import_photo_form"},:remote=>true do |f|  %>
+            <div class="add_rem_ph_form" style="height: 123px;">
+
+              <label for="album">Select an Album:</label>
+              <select  name="album_id" id="import_album_select_menu">
+                <option value="none">Select Album</option>
+                <% @album.each do |a| %>
+                  <option value="<%= a.id %>"><%= a.name %></option>
+                <% end %>
+              </select><br/>
+              <span id="import_album_error" class="form_error"></span>
+              <label for="album">Details:</label>
+              <textarea id="import_photo_detail" class="phot_details_text" name="photo_detail"></textarea>
+              <span id="import_photo_detail_error" class="form_error"></span>
+              <input type="hidden" name="photo_url" value="<%= @photo_url %>" id="import_photo_url_field" />
+            </div>
+            <div class="clear_both ph_privacy_options_div" style="padding-left: 10px;">
+              <span class="ph_privacy_options"><input checked name="share_type" type="radio" class="float_l" onclick="jQuery('.groups').hide();jQuery('#import_photo_popup .pop_up').css('height','370px');jQuery('#import_photo_popup .pop_up').center();" value="1" /><label>Private</label> </span>
+              <span class="ph_privacy_options"><input name="share_type" type="radio" class="float_l" onclick="jQuery('.groups').hide();jQuery('#import_photo_popup .pop_up').css('height','370px');jQuery('#import_photo_popup .pop_up').center();" value="0" /><label>Public</label> </span>
+              <span class="ph_privacy_options"><input id="share_with_grp_chk" name="share_type" type="radio" class="float_l" onclick="fetch_my_groups()" value="2"  /><label>Share With Groups</label> </span>
+              <br/><br/>
+              <span class="form_error" id="import_photo_group_error"></span>
+              <div class="groups" style="display: none;width:300px">
+              </div>
+              <input id="import_photo_submit" type="submit" class="blue_btn clear_both" value="Add" onclick="return check_import_photo_form()" />
+            </div>
+          <% end  %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  function check_import_photo_form()
+  {
+    jQuery(".form_error").html("");
+    var image_url = jQuery("#import_photo_url_field");
+    var img_detail = jQuery("#import_photo_detail");
+    var album = jQuery("#import_album_select_menu");
+    var flag = true;
+    if(image_url.val().length==0)
+    {
+      flag=false;
+      alert("Please chose picture to add.")
+    }
+    if(album.val()=="none")
+    {
+      flag=false;
+      jQuery("#import_album_error").html("Please select an album.");
+    }
+    if(jQuery.trim(img_detail.val()).length==0)
+    {
+      flag=false;
+
+      jQuery("#import_photo_detail_error").html("Please enter photo details.");
+      //img_detail.next(".form_error").html("Please enter photo details.");
+    }
+    else
+    {
+      if(img_detail.val().length>500)
+      {
+        flag=false;
+        jQuery("#import_photo_detail_error").html("Photo details should be of maximum 500 characters.");
+        //img_detail.next(".form_error").html("Photo details should be of maximum 500 characters.");
+      }
+    }
+    if(jQuery("#share_with_grp_chk").attr("checked")=="checked" && jQuery("#import_photo_popup .groups_container input[type='checkbox']:checked").length==0)
+    {
+      flag=false;
+      jQuery("#import_photo_group_error").html("Please select at least one group.");
+    }
+    if(flag)
+    {
+      jQuery("#import_photo_form").submit();
+      jQuery("#import_photo_submit").attr("disabled","true").val("Adding");
+    }
+    return false;
+  }
+  
+  function fetch_my_groups()
+  {
+    jQuery.get("/load_my_groups",function(data){
+      jQuery("#import_photo_popup .pop_up").css("height","492px")
+      jQuery("#import_photo_popup .groups").show();
+      jQuery("#import_photo_popup .groups").html(data);
+      jQuery('#import_photo_popup .pop_up').center();
+    });
+  }
+
+  jQuery(document).ready(function(){
+      jQuery("#import_photo_popup .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#import_photo_popup .pop_up").height())/2+"px"});
+      jQuery("#import_photo_popup .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#import_photo_popup .pop_up").width())/2+"px"});
+      jQuery('#import_album_select_menu').selectmenu();
+  });
+</script>

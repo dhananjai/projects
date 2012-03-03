@@ -1,0 +1,25 @@
+
+if(added_from_site)
+{
+  <% if @photo.errors.blank?  %>
+    alert("Photo added successfully.");
+  <% else %>
+    alert("Invalid image format.");
+  <% end %>
+  window.close();
+}
+else
+{
+  reset_remote_photo_from();
+  jQuery("#show_remote_photos").hide();
+  <% if @photo.album_id==@current_album_id.to_i or @current_album_id=="" %>
+  var $items = jQuery("<%= escape_javascript(render :partial=>"photo_block", :locals=>{:pic=>@photo}).html_safe %>");
+  jQuery(".photos_container").append($items).masonry( 'appended', $items, true );
+  jQuery(".photos").hover(function(){
+      jQuery(this).find(".photo_actions").show().animate({'height':'23px'},"fast");
+      },function(){
+      jQuery(this).find(".photo_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide();});
+  });
+  setTimeout('jQuery(".photos_container").masonry( "reload" );',500);
+  <% end %>
+}

@@ -1,0 +1,17 @@
+<!-- Comment starts here  -->
+<% com_user = comment.user %>
+<div class="photo_comment">
+  <a href="<%= com_user.profile_path %>" class="ph_com_pr_pic">
+    <img src="<%= com_user.profile_pic(:small) %>" class="small_user_image float_l" title="<%= com_user.username %>" />
+  </a>
+  <span class="ph_com_texts">
+    <a href="#" class="ph_com_usr_name">
+      <%= com_user.username %>
+    </a>
+    <span class="ph_com_matter">
+      <%= comment.comment %>
+    </span>
+  </span>
+
+</div>
+<!-- Comment ends here  -->

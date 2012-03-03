@@ -1,0 +1,139 @@
+<div class="grey_overlay" id="add_photo_popup">
+  <div class="pop_up" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery('#add_photo_popup').hide();" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content">
+        <span class="popup_heading">Add Photo</span>
+        <div id="add_ph_op_div">
+          <a href="javascript:void(0);" class="add_photo_option" onclick="jQuery('#add_ph_op_div').hide();jQuery('#find_photo_form').show();" >Find Photo</a>
+          <a href="javascript:void(0);" class="add_photo_option" onclick="jQuery('#add_ph_op_div').hide();jQuery('#add_photo_popup').hide();jQuery('#upload_photo_form .pop_up').css('height', '300px');jQuery('#show_photo_from_syst').show();">Upload Photo</a>
+        </div>
+        <div id="find_photo_form" class="photo_form">
+          <%= form_for :photos, :url=>{:controller=>:albums, :action => 'find_photo'},:remote=>true do |f|  %>
+            <table width="100%" class="popup_form_table">
+              <tr>
+                <td  align="left" width="30%"><span class="form_field_name">Site Url:<span class="mendatory">*</span></span></td>
+                <td align="left" ><%= text_field 'photos','site_url', :style=>"width:200px" %><br/><span class="form_error siteurlError"></span></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td align="left"><input id="find_photo_btn" type="submit" class="blue_btn" value="Find" onclick="return check_photo_url('none');" /></td>
+              </tr>
+            </table>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    jQuery("#add_photo_popup .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#add_photo_popup .pop_up").height())/2+"px"});
+    jQuery("#add_photo_popup .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#add_photo_popup .pop_up").width())/2+"px"});
+  });
+  var url="";
+  function check_photo_url(mode)
+  {
+    jQuery(".form_error").html("");
+    var url ="";
+    if(mode=="prev")
+    {
+      url = jQuery("#site_url_prev").val();
+      if(url !="" && !url.match(/^(ht|f)tps?:\/\//))
+      {
+        url = "http://"+url;
+        jQuery("#site_url_prev").val(url);
+
+      }
+    }
+    else
+    {
+      url= jQuery("#photos_site_url").val();
+      if(url !="" && !url.match(/^(ht|f)tps?:\/\//))
+      {
+        url = "http://"+url;
+        jQuery("#photos_site_url").val(url);
+
+      }
+    }
+    var decode_url = url;
+    var flag = true;
+    var tabRegExp = /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+    if(jQuery.trim(url).length==0)
+    {
+      flag = false;
+      jQuery(".siteurlError").html("Please enter site url.");
+    }
+    else
+    {
+      if(!url.match(tabRegExp))
+      {
+        flag = false;
+        jQuery(".siteurlError").html("Please enter valid site url.");
+      }
+    }
+    if(flag)
+    {
+      toggle_ajax_loader();
+      var original_url = url;
+      url = encodeURIComponent(url);
+      jQuery.get("<%= url_for :action => 'find_photo',:only_path => false %>?site_url="+url,function(data){
+          
+          $rem_html = jQuery(data);
+          var is_found = false;
+          jQuery("#add_photo_popup").fadeOut(function(){
+            $images= jQuery("<div class='rem_ph_div'></div>");
+            $rem_html.find("img").each(function(v,i){
+            
+              var newImg = new Image();
+
+              $image = jQuery("<img src='"+jQuery(this).attr('src')+"' />")
+              if((!jQuery(this).attr("src").match("http://")) && !jQuery(this).attr("src").match("data:image"))
+              {
+                  var l= decode_url;
+                  l = l.substr(0,l.indexOf("/",10));
+                  $image.attr("src",l+"/"+$image.attr("src"));
+              }
+              
+
+              //console.log(jQuery(this).attr('data-src') + jQuery(this).attr('src') +jQuery(this).height() + jQuery(this).width());
+              //console.log(newImg.width + " height"+ newImg.height);
+              if(decode_url.match("http://www.google.co.in") || jQuery.browser.safari)
+              {
+                $images.append($image);
+                is_found = true;
+              }
+              else
+              {
+                if(jQuery(this).width()!=0 || jQuery(this).height()!=0)
+                {
+                  //console.log(newImg.width + " height"+ newImg.height);
+                  $images.append($image);
+                  is_found = true;
+                }
+              }
+              
+              
+            });
+            toggle_ajax_loader();
+            if(is_found)
+            {
+              
+              jQuery("#show_remote_photos div.rem_ph_div").replaceWith($images);
+              jQuery("#show_remote_photos div.rem_ph_div img:first").addClass("current");
+              jQuery("#photo_url_field").val(jQuery("#show_remote_photos div.rem_ph_div img:first").attr('src'));
+              jQuery("#site_url_prev ,#site_url_for_sitename").val(original_url);
+
+              jQuery("#show_remote_photos").fadeIn();
+            }
+            else
+            {
+              //alert("No usefull image found.")
+              display_flash_message("No usefull image found.");
+            }
+          });
+      });
+    }
+    return false;
+  }
+</script>

@@ -1,0 +1,4 @@
+var com_count = <%= @pic.comment_count %>;
+jQuery(".photo_comment_<%= params[:id] %>").fadeOut(function(){jQuery(this).remove();jQuery(".photos_container").masonry( 'reload');});
+jQuery(".pic_comment_count_<%= @pic.id %>").html(com_count);
+jQuery(".photos_container").masonry( 'reload');

@@ -1,0 +1,4 @@
+jQuery("#edit_group_popup").fadeOut(function(){
+  jQuery("#group_<%=@group.id%> .group_name").html("<%= @group.name %>");
+  display_flash_message("<%= @notice %>");
+});

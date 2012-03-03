@@ -1,0 +1,131 @@
+<script type="text/javascript">
+
+  jQuery(document).ready(function() {
+    jQuery("#new_message_div").children(".menu_item ").addClass("current_menu");
+	
+    jQuery('#receiver_id').keyup(function() {
+      $('#message_receiver_id').val('')
+    });
+
+    jQuery('#from_follower_following').click(function() {
+      $.ajax({
+  	url: "from_follower_following",
+        success: function(){
+          $('#message_receiver_id').val('');
+          $('#receiver_id').val('');
+  	}
+      });
+    });
+
+  });
+
+</script>
+<script type="text/javascript" src="/javascripts/message.js"></script>
+<div class="main_panel">
+  <span class="blue_header">New Message</span>
+  <div id="new_message_error">&nbsp;</div>
+  <%= form_for(@message, :remote => true) do |f| %>
+
+
+    <%= f.hidden_field :sender_id, :value => current_user.id %>
+    <%= f.hidden_field :receiver_id, :value => '' %>
+    <!--input type="submit" class="blue_btn float_l margin_top_five" value="Send" /-->
+
+    <!-- Message conatiner satart here -->
+    <div class="messages_conatiner new_message_div">
+      <div class="form_fields_div">
+        <span class="form_left_data form_field_name float_l">To:<span class="mendatory">*</span></span>
+        <span class="form_right_data form_field_control float_l">
+          <%#= autocomplete_field_tag "receiver_id", '', autocomplete_user_username_users_path, :id_element => '#id_element', :class => "" %>
+          <input type="text" name="message[receiver_ids]" id="recievers_text_box" class="new_message_text_field float_l"/>
+          <span class="new_message_select_from_f_n_f">
+            <% unless @login_user.is_admin? %>
+            <input type="checkbox" class="float_l" id="from_follower_following"/> <span class="margin_top_five">Select from your followings and followers</span></span>
+            <% end %>
+           <span id="to_error" class="form_error clear_both">&nbsp;</span>
+        </span>
+        
+      </div>
+      <div class="form_fields_div">
+        <span class="form_left_data form_field_name float_l">Message:<span class="mendatory">*</span></span>
+        <span class="form_right_data form_field_control float_l">
+          <%= f.text_area :message,:id => "message_message", :class=>"new_message_text_area" %>
+        <span id="msg_error" class="form_error clear_both">&nbsp;</span>
+        </span>
+        
+      </div>
+      <div class="form_fields_div">
+        <span class="form_left_data form_field_name float_l">&nbsp;</span>
+        <span class="form_right_data form_field_control float_l">
+          <%= f.submit "Send", :class => "blue_btn", :onclick => "return checkMessageValidation()" %>
+        </span>
+      </div>
+
+
+
+    </div>
+  <% end %>
+  <!-- Message conatiner end here -->
+</div>
+<script type="text/javascript">
+  
+ jQuery(document).ready(function(){
+
+	
+
+function split( val ) {
+			return val.split( /,\s*/ );
+		}
+		function extractLast( term ) {
+			return split( term ).pop();
+		}
+
+		$( "#recievers_text_box" )
+			// don't navigate away from the field on tab when selecting an item
+			.bind( "keydown", function( event ) {
+				if ( event.keyCode === $.ui.keyCode.TAB &&
+						$( this ).data( "autocomplete" ).menu.active ) {
+					event.preventDefault();
+				}
+			})
+			.autocomplete({
+				source: function( request, response ) {
+					$.getJSON( "search_user_names_for_message/"+extractLast( request.term ),response );
+				},
+				search: function() {
+					// custom minLength
+					var term = extractLast( this.value );
+					if ( term.length < 1 ) {
+						return false;
+					}
+				},
+				focus: function() {
+					// prevent value inserted on focus
+					return false;
+				},
+				select: function( event, ui ) {
+
+					var terms = split( this.value );
+					// remove the current input
+					terms.pop();
+					// add the selected item
+                                        if(this.value.indexOf(ui.item.value+",")==-1)
+                                        {
+                                          terms.push( ui.item.value );
+                                        }
+					// add placeholder to get the comma-and-space at the end
+					terms.push( "" );
+					this.value = terms.join( ", " );
+					return false;
+				}
+			});
+
+
+
+
+
+}); 
+
+
+
+</script>

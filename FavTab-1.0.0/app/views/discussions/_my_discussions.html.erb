@@ -1,0 +1,99 @@
+<div class="normal_url_block my_discussions_block">
+  <div class="d_inner_div float_l">
+    <span class="my_discussion_comment_link_span">
+<%#=  link_to 'My Discussions', {:action => 'load_my_comments' },  :remote=>true, :class => "my_discussion_comment_link" %>
+      <a href="javascript:void(0);" onclick="load_my_comments();" class="my_discussion_comment_link">My Comments</a> </span>
+    <!-- URL 1 -->
+    <% if @discussions.present? %>
+      <%  @discussions.each do |discussion|%>
+        <%= render :partial => "discussions/simple_discussion_block", :locals=>{:discussion=>discussion}%>
+      <%end%>
+    <% else %>
+      <div id="discussion_error_msg" class="discussion_error_msg" align="left">No discussions available.</div>
+    <%end%>
+    <!-- URL 1 end -->
+  </div>
+  <div class="loader_div" id="my_discussion_loader">
+    <img title="Loading" alt="Loading" src="/images/ajax-loader.gif"/>
+  </div>
+</div>
+<% unless direct %>
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+      jQuery("#my_discussion_header").html("My Discussions")
+      set_effects();
+      apply_scroll_effects();
+
+      jQuery("#my_discussion_comments").find('.rating_class').each(function(v,i){
+        if(!jQuery(this).children("img").size()>0)
+        {
+          jQuery(this).raty({
+            click: function(score, evt) {
+              current_object = jQuery(this);
+              $(this).parent().submit();
+            }
+          });
+        }
+      
+      });
+
+      jQuery("#my_discussion_comments").find(".rating_container").each(function(v,i){
+      var value = jQuery(this).children("span").html();
+      if(!jQuery(this).children('.rating_class_fixed').children("img").size()>0)
+      {
+      jQuery(this).children('.rating_class_fixed').raty({
+        readOnly:	true,
+        start:		value
+      });
+      }
+
+      });
+
+    });
+  </script>
+<% end %>
+<script type="text/javascript">
+  (function() {
+    var m_disc_page = 1,
+    loading = false,
+    m_d_finish = false;
+
+    function nearBottomOfPage() {
+      //console.log(jQuery(".my_discussions_block").scrollTop() > jQuery(".my_discussions_block .d_inner_div").height() - jQuery(".my_discussions_block").height()-10);
+      return (jQuery(".my_discussions_block").scrollTop() > jQuery(".my_discussions_block .d_inner_div").height() - jQuery(".my_discussions_block").height()-10) && (jQuery(".my_discussions_block .d_inner_div").height() - jQuery(".my_discussions_block").height())>0;
+    }
+
+    function m_d_finish() {
+      m_d_finish = true;
+    }
+
+    jQuery(".my_discussions_block").scroll(function(){
+      if (loading) {
+        return;
+      }
+
+      if(nearBottomOfPage() && !m_d_finish) {
+        loading=true;
+        jQuery("#my_discussion_loader").show();
+        m_disc_page++;
+        jQuery.ajax({
+          url: '/load_my_discussions_on_scroll/?page=' + m_disc_page+"&id=<%= @other_user.id %>",
+          type: 'get',
+          dataType: 'script',
+          success: function() {
+            loading=false;
+            jQuery("#my_discussion_loader").hide();
+          }
+        });
+      }
+      if(m_d_finish)
+      {
+        jQuery("#my_discussion_loader").hide();
+      }
+    });
+    if(!nearBottomOfPage())
+    {
+      jQuery("#my_discussion_loader").hide();
+    }
+  }());
+</script>

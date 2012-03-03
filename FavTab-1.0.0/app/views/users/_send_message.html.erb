@@ -1,0 +1,27 @@
+<div class="grey_overlay" id="send_message_pop_up">
+  <div class="pop_up current_tab_popup" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery('#send_message_pop_up').fadeOut();" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content">
+       <%= form_for(Message.new, :remote => true, :html => {:id=>"send_message_form"}) do |f| %>
+         <%= f.hidden_field :sender_id, :value => @login_user.id %>
+         <%= f.hidden_field :receiver_ids, :value => @other_user.username %>
+        <span class="popup_heading">Send Message</span>
+          <table width="100%" class="popup_form_table">
+            <tr>
+              <td valign="top" align="left" width="30%"><span class="form_field_name">Message:</span></td>
+              <td align="left" >
+		<%= f.text_area :message,:id => "message_message", :style=>"width:200px;height:50px" %>
+	      </td>
+            </tr>
+            <tr>
+              <td></td><td>
+		<input type="button" class="blue_btn" value="Send" onclick="jQuery('#send_message_form').submit() ;jQuery('#send_message_pop_up').fadeOut();"/>
+	      </td>
+            </tr>
+          </table>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

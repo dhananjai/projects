@@ -1,0 +1,45 @@
+<script type="text/javascript" src="/javascripts/jquery.masonry.js"></script>
+<script type="text/javascript" src="/javascripts/modernizr-transitions.js"></script>
+<script type="text/javascript" src="/javascripts/pictures.js"></script>
+
+<span class="blue_header"><%= @curr_album.name %></span>
+<% if @login_user == @other_user %>
+  <span class="add_photo_span">
+    <a class="album_action_link" href="javascript:void(0);" onclick="jQuery('#add_ph_op_div').show();jQuery('#add_photo_popup #find_photo_form,#add_photo_popup #upload_photo_form').hide();jQuery('#add_photo_popup').fadeIn();">Add Photo</a>
+  </span>
+<% end %>
+<div class="photos_container">
+  <% @pictures.each do |a_p| %>
+    <%= render :partial=>"photo_block", :locals=>{:pic=>a_p} %>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+  var added_from_site = false;
+  jQuery(document).ready(function(){
+      setTimeout('applyPhotoEffects();',1000);
+
+    jQuery(".photos").hover(function(){
+      jQuery(this).find(".photo_actions").show().animate({'height':'23px'},"fast");
+      },function(){
+      jQuery(this).find(".photo_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide();});
+    });
+
+  });
+  function applyPhotoEffects()
+  {
+    jQuery(".photos_container").masonry({
+      itemSelector: '.photos'
+    });
+  }
+
+  function display_image_full_detail(ap_id)
+  {
+    jQuery.get("/load_photo_full_detail/"+ap_id,function(data){
+      jQuery("body").append(data);
+    });
+  }
+</script>
+<%= render :partial=>"add_photo" %>
+<%= render :partial=>"remote_photos" %>
+<%= render :partial => "add_photo_from_system" %>

@@ -1,0 +1,105 @@
+<div class="left_panel" align="center">
+  <%= render :partial => "users/user_left_panel" %>
+</div>
+<div class="main_panel">
+  <span class="blue_header"><span title="<%= @is_current_user ? "" : @other_user.username %> "><%= @is_current_user ? "My" : truncate(@other_user.username, :length=>20)+"'s" %></span> Albums</span>
+  <!-- Album container starts here -->
+  <div class="albums_container">
+    <span class="add_album_span">
+    <% if @login_user == @other_user %>
+      <a class="album_action_link float_l" href="javascript:void(0);" onclick="jQuery('#create_group_popup').fadeIn();">Add Album</a>
+    <% end %>
+      <% host_url = "http://"+request.host_with_port %>
+      <a class="album_action_link float_l" href="javascript:void((function(){var%20e=document.createElement('script');e.setAttribute('type','text/javascript');e.setAttribute('charset','UTF-8');e.setAttribute('src','<%= host_url %>/javascripts/jquery.js?r='+Math.random()*99999999);document.body.appendChild(e);e=document.createElement('script');e.setAttribute('type','text/javascript');e.setAttribute('charset','UTF-8');e.setAttribute('src','<%= host_url %>/javascripts/tabitt_photo_pick_bookmark.js?r='+Math.random()*99999999);document.body.appendChild(e);})());">Grab Pics</a><span class="bookmark_note float_l">(Drag the "Grab Pics" to bookmark bar.)</span>
+    </span>
+    <div id="groups_container">
+      <%= render :partial => "album_block", :locals => {:album => @albums} %>
+    </div>
+    <!-- Album ends here -->
+
+  </div>
+  <!-- Album container ends here -->
+</div>
+<%= render :partial => "create_album", :layout => false %>
+<%= render :partial=>"edit_album" %>
+<!-- Album ui script starts here -->
+<!-- Please dont move it -->
+<script type="text/javascript">
+  jQuery(function(){
+
+    jQuery(".albums").hover(function(){
+      jQuery(this).find(".album_actions").show().animate({'height':'15px'},"fast");
+    },function(){
+      jQuery(this).find(".album_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide()});
+    });
+  });
+
+  function group_form()
+  {
+    var group_name = jQuery("#group_name").val();
+    flag = true;
+    if(jQuery.trim(group_name).length==0 || group_name.length==0)
+    {
+      error = "Name can't be blank.";
+      printError("group_name_error",error);
+      flag = false;
+    }
+    if(group_name.length>20)
+    {
+      error = "Name can't be of more than 20 characters.";
+      printError("group_name_error",error);
+      flag = false;
+    }
+    return flag;
+
+  }
+  function edit_album_form()
+  {
+    var album_name = jQuery("#album_name_edit").val();
+    flag = true;
+    if(jQuery.trim(album_name).length==0 || album_name.length==0)
+    {
+      error = "Name can't be blank.";
+      printError("group_name_edit_error",error);
+      flag = false;
+    }
+    if(album_name.length>20)
+    {
+      error = "Name can't be of more than 20 characters.";
+      printError("album_name_edit_error",error);
+      flag = false;
+    }
+    return flag;
+
+  }
+
+  jQuery(document).ready(function(){
+
+    jQuery('.delete_album').bind('ajax:success', function() {
+      jQuery(this).closest('div.groups_outer_div').fadeOut().remove();
+    });
+    apply_scroll_effect_to("group_users_container");
+  });
+
+  function edit_album(id)
+  {
+    jQuery(".error").html("");
+    jQuery('#edit_group_popup').find('#album_id').val(id);
+    jQuery('#edit_group_popup').find('#album_name_edit').val(jQuery("#album_name_edit_"+id).html());
+    jQuery('#edit_group_popup').fadeIn();
+  }
+
+  function remove_from_group(g_u_id)
+  {
+    jQuery.get("/remove_from_group/"+g_u_id,function(data){
+      if(data=="Success" || data=="Added to default")
+      {
+        jQuery(".group_user_"+g_u_id).fadeOut(function(){
+          jQuery(this).remove();
+        });
+      }
+    });
+  }
+
+</script>
+<!-- Album ui script ends here -->

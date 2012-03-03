@@ -1,0 +1,88 @@
+<div class="left_panel" align="center">
+  <%= render :partial => "user_left_panel" %>
+</div>
+<div class="main_panel">
+  <span class="blue_header">Manage Groups</span>
+  <div class="follower_following_big_div">
+    <div align="center"><a href="javascript:void(0);" onclick="jQuery('#create_group_popup').fadeIn();jQuery('.error').html('');" class="action_link no_text_deco padding_top_five" >Create Group</a> </div>
+    <br/>
+    <div align="left">
+      <div id="groups_container">
+        <% @groups.each do |grp|%>
+          <%= render :partial=>"group_block", :locals=>{:grp=>grp} %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  function group_form()
+  {
+    var group_name = jQuery("#group_name").val();
+    flag = true;
+    if(jQuery.trim(group_name).length==0 || group_name.length==0)
+    {
+      error = "Name can't be blank.";
+      printError("group_name_error",error);
+      flag = false;
+    }
+    if(group_name.length>50)
+    {
+      error = "Name can't be of more than 50 characters.";
+      printError("group_name_error",error);
+      flag = false;
+    }
+    return flag;
+
+  }
+  function edit_group_form()
+  {
+    var group_name = jQuery("#group_name_edit").val();
+    flag = true;
+    if(jQuery.trim(group_name).length==0 || group_name.length==0)
+    {
+      error = "Name can't be blank.";
+      printError("group_name_edit_error",error);
+      flag = false;
+    }
+    if(group_name.length>50)
+    {
+      error = "Name can't be of more than 50 characters.";
+      printError("group_name_edit_error",error);
+      flag = false;
+    }
+    return flag;
+
+  }
+  
+  jQuery(document).ready(function(){
+
+    jQuery('.delete_group').bind('ajax:success', function() {
+      jQuery(this).closest('div.groups_outer_div').fadeOut().remove();
+    });
+    apply_scroll_effect_to("group_users_container");
+  });
+
+  function edit_group(id)
+  {
+    jQuery(".error").html("");
+    jQuery('#edit_group_popup').find('#group_id').val(id);
+    jQuery('#edit_group_popup').find('#group_name_edit').val(jQuery("#group_name_"+id).html());
+    jQuery('#edit_group_popup').fadeIn();
+  }
+
+   function remove_from_group(g_u_id)
+   {
+       jQuery.get("/remove_from_group/"+g_u_id,function(data){
+        if(data=="Success" || data=="Added to default")
+        {
+          jQuery(".group_user_"+g_u_id).fadeOut(function(){
+            jQuery(this).remove();
+          });
+        }
+      });
+   }
+   
+</script>
+<%= render :partial=>"users/create_group" %>
+<%= render :partial=>"users/edit_group" %>

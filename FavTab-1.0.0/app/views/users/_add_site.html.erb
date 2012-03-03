@@ -1,0 +1,22 @@
+<div class="grey_overlay" id="add_new_site">
+  <div class="pop_up" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery('#add_new_site').hide();" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content">
+        <%= form_for :site, :url=>{:controller=>:users, :action => 'create_site'}, :html=>{:onsubmit=>"return check_tab_site();"} do |f|  %>
+          <span class="popup_heading">Add Site</span>
+          <table width="100%" class="popup_form_table">
+            <tr>
+              <td  align="left" width="30%"><span class="form_field_name">Site Url:<span class="mendatory">*</span></span></td>
+              <td align="left" ><%= text_field 'site', 'site_url', :style=>"width:200px" %><br/><span id="siteurlError" class="form_error"></span></td>
+            </tr>
+            <tr>
+              <td><%= hidden_field 'site','tab_id' %><%= hidden_field 'site','id'%></td>
+              <td><input type="submit" class="blue_btn" value="Add"/></td>
+            </tr>
+          </table>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

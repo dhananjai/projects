@@ -1,0 +1,4 @@
+jQuery("#album_div_<%= @album.id  %>").fadeOut().remove();
+<% if @login_user.shared_albums(@login_user.id).blank? %>
+  jQuery('#no_album_error').html('There are no albums available for you.');
+<% end %>

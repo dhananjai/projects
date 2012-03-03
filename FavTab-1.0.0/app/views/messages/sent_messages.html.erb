@@ -1,0 +1,51 @@
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+   
+    jQuery("#sent_message_div").children(".menu_item ").addClass("current_menu");
+  
+    $('.delete_msg').bind('ajax:success', function() {
+      $(this).closest('tr').fadeOut();
+    });
+  });
+</script>
+
+<div style="width:280px" class="msg-td">
+  <div style="width:280px" id="msgError">
+  </div>
+</div>
+
+<div class="main_panel">
+  <span class="blue_header">Sent Messages</span>
+
+  <!-- Message conatiner satart here -->
+  <div class="messages_conatiner sent_message_div">
+    <% if !@sent_msgs.blank? %>
+      <table>
+        <% for message in @sent_msgs %>
+          <tr><td>
+              <!-- message 1 -->
+              <div class="inbox_message">
+                <div class="user_image_div">
+                  <a href="<%= get_user_by_user_id(message.receiver_id).profile_path %>" class="user_name">
+                    <img alt="" class="medium_user_image" src="<%= get_user_by_user_id(message.receiver_id).profile_pic(:medium) %>" /></a>
+                </div>
+                <div class="message_div">
+                  <a href="<%= get_user_by_user_id(message.receiver_id).profile_path %>" class="user_name"><%= message.recipient.username %></a>
+                  <span class="message_date_time">Sent at <%= message_time(message) %></span>
+                  <span class="message_detail">
+                    <pre class="message_pre"><%= message.message %></pre>
+                  </span>
+                  <div class="message_action_div">
+                    <%=  link_to 'Delete', {:action => 'message_delete', :id => message.id }, :confirm=>"Are you sure you want to delete?", :remote=>true, :class => "discussion_action_link delete_msg" %>
+                  </div>
+                </div>
+              </div>
+            </td></tr>
+        <% end %>
+        <%= will_paginate @sent_msgs %>
+      </table>
+    <% else  %>
+      You have no sent messages.
+    <% end %>
+  </div>
+</div>

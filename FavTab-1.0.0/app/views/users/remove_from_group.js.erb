@@ -1,0 +1,10 @@
+<% if @deleted %>
+jQuery(".group_user_<%= params[:id] %>").remove();
+<% else %>
+  display_flash_message("<%= @notice %>");
+<% end %>
+<% if !@new_group_user.nil? and @new_group_user.id %>
+  var output_html = ("<%= escape_javascript(render :partial => "group_user", :locals=>{:g_u=>@new_group_user}).html_safe %>");
+  jQuery("#group_<%= @defalut_group.id %> .group_users_container").append(output_html);
+<% end %>
+

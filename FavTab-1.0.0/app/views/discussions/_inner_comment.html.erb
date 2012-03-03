@@ -1,0 +1,92 @@
+<%  @other_user.nil? ?  @other_user = current_user : "" %>
+<!-- inner Comment start here-->
+<div class="inner_comment_wrapper <% if @other_user.id==response.user_id %>current_users_comment<% end %> comment_<%= response.id %>">
+  <div class="float_l">
+    <a class="toggle_comment <% if response.children.count>0 %>  expand_btn<% end %> margin_top_five" href="javascript:void(0);">&nbsp;</a>
+  </div>
+  <div class="float_l">
+    <a href="/users/profile/<%= response.user.id %>" >
+        <img src="<%= response.user.profile_pic(:small) %>" class="small_user_image" />
+    </a>
+    
+  </div>
+  <div class="float_l">
+    <div class="comment_detail_div">
+      <a class="user_name float_l" href="/users/profile/<%= response.user.id %>"><%= get_username(response.user_id)%></a>
+      <span class="comment_text"><%= response.comment %></span>
+      <% unless @login_user.is_admin? %>
+        <% if current_user.id == response.user_id  %>
+          <div class="edit_comment_div hidden_element" style="display: none;">
+            <%= form_for :response_comment, :url=>{:controller=>:discussions, :action => 'update_comment_responses'}, :remote=>true do |f|  %>
+              <%= text_area 'response_comment', 'comment', :class=>"post_comment_text_area float_l clear_both"%>
+              <%= hidden_field_tag 'response_comment[id]', response.id %>
+              <a class="blue_btn clear_both float_l padding_top_six center_text" onclick='update_comment_response(jQuery(this));'>Update</a>
+            <% end%>
+            <a class="action_link no_text_deco float_l cancel_edit_link comman_cancel_link" href="javascript:void(0);">Cancel</a>
+          </div>
+        <% end %>
+      <% end %>
+      <div><%= render :partial=> "discussions/rating_partial", :locals=>{:rating_for => response} %></div>
+      <div class="post_comment_div">
+        <span class="clear_both">
+          <% unless @login_user.is_admin? %>
+            <a class="discussion_action_link comment_link " href="javascript:void(0);">Post Comment</a>
+          <% end %>
+          <% if @login_user.is_admin? %>
+              <a href="javascript:void(0);" class="discussion_action_link" onclick="delete_comment(jQuery(this),<%= response.id %>)">Delete</a>
+          <% elsif current_user.id == response.user_id  %>
+            <span class="discussion_action_link">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+            <a class="discussion_action_link edit_comment_link" href="javascript:void(0);">Edit</a>
+            <% if response.children.count<=0 %>
+              <span class="discussion_action_link">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+              <a class="discussion_action_link delete_comment_link" onclick="delete_comment(jQuery(this), <%= response.id %>)" href="javascript:void(0);">Delete</a>
+            <% end %>
+          <% end %>
+        </span>
+        <% unless @login_user.is_admin? %>
+          <div class="comment_form_div">
+            <%= form_for :response_comment, :url=>{:controller=>:discussions, :action => 'post_comment_responses'}, :remote=>true do |f|  %>
+              <%= text_area 'response_comment', 'comment', :class=>"post_comment_text_area float_l clear_both"%>
+              <%= hidden_field_tag 'response_comment[discussion_id]', response.discussion_id %><%= hidden_field_tag 'response_comment[parent_id]', response.id %>
+              <a class="blue_btn clear_both float_l padding_top_six center_text" onclick='post_comment_response(jQuery(this));'>Post Comment</a>
+            <% end%>
+            <a class="action_link no_text_deco float_l cancel_link comman_cancel_link" href="javascript:void(0);">Cancel</a>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="comments_div grey_bg">
+    <%  response.children.each do |response| %>
+      <%= render :partial=>"discussions/inner_comment", :locals=>{:response=>response,:is_creating=>false} %>
+    <% end %>
+  </div>
+</div>
+<!-- inner Comment end here-->
+<% if is_creating %>
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+      set_effects();
+    });
+  </script>
+<% end %>
+
+<script type="text/javascript">
+ /* var curr_object = "";
+
+  function update_comment_response(curr_obj)
+  {
+    curr_object = curr_obj;
+    curr_obj.parent().parent().children("form").submit();
+
+  }
+
+  function delete_comment(curr_obj, cid)
+  {
+    curr_object = curr_obj;
+    jQuery.get('/delete_comment/'+cid, function(data){
+      curr_object.parent().parent().parent().parent().parent().remove();
+    });
+  }
+*/
+</script>

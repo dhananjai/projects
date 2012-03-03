@@ -1,0 +1,23 @@
+<div class="grey_overlay" id="add_new_tab">
+  <div class="pop_up" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery('.grey_overlay').hide()" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content">
+        <%= form_for :tab, :url=>{:controller=>:users, :action => 'add_tab'} , :html=>{:onsubmit=>"return check_tab();"} do |f|  %>
+          <span class="popup_heading"></span>
+          <table width="100%" class="popup_form_table">
+            <tr>
+              <td  align="left" width="30%"><span id="tab" class="form_field_name">Tab List Name:<span class="mendatory">*</span></span></td>
+              <td align="left" ><%= text_field 'tab', 'name', :style=>"width:200px", :id=>"tab_name"%><br/><span id="tabNameError" class="form_error"></span></td>
+            </tr>
+            <tr>
+              <td><%= hidden_field 'tab','user_id', :value => current_user.id %>
+              <%= hidden_field 'tab','id', :value => 1 %></td>
+              <td><input type="submit" class="blue_btn" value="Update"/></td>
+            </tr>
+          </table>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

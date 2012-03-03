@@ -1,0 +1,7 @@
+<% @albums.each do |album| %>
+<!-- Album starts here -->
+  <%= render :partial => "album", :locals => {:album => album} %>
+  <!-- Album ends here -->
+<% end %>
+
+

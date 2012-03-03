@@ -1,0 +1,58 @@
+<script type="text/javascript" src="/javascripts/pictures.js"></script>
+<div class="discussion_header" align="left">
+  <span class="yellow_header padding_left_ten">Updates From Followed Members</span>
+</div>
+<div class="normal_url_block feeds_block">
+  <div class="d_inner_div float_l">
+    <%= render :partial=>"feeds", :locals=>{:feeds => @feeds} %>
+  </div>
+  <div class="loader_div" id="feeds_loader">
+    <img title="Loading" alt="Loading" src="/images/ajax-loader.gif"/>
+  </div>
+</div>
+
+<script type="text/javascript">
+(function() {
+  var feed_page = 1,
+  loading = false,
+  feed_finish = false;
+
+  function nearBottomOfPage_most_pop_d()
+  {
+    //console.log((jQuery(".feeds_block").scrollTop() > jQuery(".feeds_block .d_inner_div").height() - jQuery(".feeds_block").height()-10) && (jQuery(".feeds_block .d_inner_div").height() - jQuery(".feeds_block").height())>0);
+    return (jQuery(".feeds_block").scrollTop() > jQuery(".feeds_block .d_inner_div").height() - jQuery(".feeds_block").height()-10) && (jQuery(".feeds_block .d_inner_div").height() - jQuery(".feeds_block").height())>0;
+  }
+
+  function feed_finish() {
+    feed_finish = true;
+  }
+
+  jQuery(".feeds_block").scroll(function(){
+    if (loading) {
+      return;
+    }
+
+    if(nearBottomOfPage_most_pop_d() && !feed_finish) {
+      loading=true;
+      jQuery("#feeds_loader").show();
+      feed_page++;
+     jQuery.ajax({
+        url: '/load_more_feeds/?page=' + feed_page,
+        type: 'get',
+        dataType: 'script',
+        success: function(data) {
+          loading=false;
+           jQuery("#feeds_loader").hide();
+        }
+      });
+    }
+  });
+}());
+</script>
+
+
+
+
+
+
+

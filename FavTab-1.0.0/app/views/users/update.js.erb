@@ -1,0 +1,14 @@
+<% if @login_user.errors.present? || @detail.errors.present? %>
+//$('#edit_user_error').html("<%= escape_javascript(activerecord_error_list(@login_user.errors)+activerecord_error_list(@detail.errors)).html_safe %>");
+display_flash_message("<%= escape_javascript(activerecord_error_list(@login_user.errors)+activerecord_error_list(@detail.errors)).html_safe %>");
+<% else %>
+$("#profile_no_edit").html("<%= escape_javascript(render(:partial => 'users/sub_partial/show_user')).html_safe %>");
+display_flash_message("User updated successfully.");
+jQuery("input[type='text'], textarea").each(function(v,i){
+    jQuery(this).siblings("pre").html(jQuery(this).val());
+});
+<% end %>
+
+
+
+

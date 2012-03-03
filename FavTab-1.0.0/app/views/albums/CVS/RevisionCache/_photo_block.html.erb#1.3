@@ -1,0 +1,41 @@
+<!-- Photo starts here -->
+<% picture = album_pic.picture  %>
+  <div class="photos">
+    <div class="photo_actions">
+      <a href="javascript:void(0);" class="album_action_link float_l" >Like</a>
+      <a href="javascript:void(0);" class="album_action_link float_l" >Import</a>
+      <a class="float_r album_action_link" href="javascript:void(0);">
+        <img title="Remove" style="width: 10px; height: 10px;" src="/images/cross-icon.png?1326521089" alt="Cross-icon"/>
+      </a>
+      <a id="share_with_group_link" class="album_action_link float_r" onclick="" href="javascript:void(0);">
+        <img width="13" height="10" title="Change Group" src="/images/group.png"/>
+      </a>
+    </div>
+    <div class="photo_pic_conatiner float_l">
+      
+      <a href="#" class="float_l">
+        <img src="<%= picture.photo(:medium) %>" class="photo_pic" />
+      </a>
+        <!--<img src="/images/test_mage.jpg" class="photo_pic"/></a>-->
+       <span class="image_detail"><%= picture.photo_detail %> </span>
+<% if !picture.site_name.nil? %><span class="image_detail">Added from <a class="site_name" href="http://<%=picture.site_name%>" target="_blank"><%= picture.site_name %></a> </span><%end%>
+       <span class="image_detail small_font">
+         3 Like | 6 Comments
+       </span>
+    </div>
+    <div class="photos_comment_div float_l">
+      
+      <%= render :partial => "photo_comment_block" %>
+
+      <div class="ph_post_com_div">
+        <textarea name="" class="ph_com_text_area">
+        </textarea>
+        <a onclick="" class="blue_btn clear_both float_r padding_top_six center_text">Post Comment</a>
+      </div>
+    </div>
+  </div>
+  <!-- Photo ends here -->
+  <script type="text/javascript">
+   var added_from_site = false;
+   
+  </script>

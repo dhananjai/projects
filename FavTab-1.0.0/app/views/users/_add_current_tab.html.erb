@@ -1,0 +1,26 @@
+<div class="grey_overlay" id="add_current_tab">
+  <div class="pop_up current_tab_popup" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery('#add_current_tab').hide();" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content">
+        <%= form_for :current_tab, :url=>{:controller=>:users, :action => 'add_current_tab'}, :html=>{:onsubmit=>"return check_current_tab();"} do |f|  %>
+        <span class="popup_heading">Add Open Tabs</span>
+          <table width="100%" class="popup_form_table">
+						<tr>
+                <td colspan="2" align="left" width="100%" class="add_current_tab_text"> Step1: Download "Get opened tabs URLs" extension for Google chrome
+								<br/> Step2: Copy URLs from this and paste into text area.</td>
+						</tr>
+            <tr>
+              <td  align="left" width="30%"><span class="form_field_name">Current Urls:</span></td>
+              <td align="left" ><%= text_area 'current_tab', 'site_url', :style=>"width:200px;height:50px"%><br/><span id="currenturlError" class="form_error"></span></td>
+            </tr>
+            <tr>
+               <td><%= hidden_field 'current_tab','tab_id', :value => params[:id] %></td>
+              <td><input type="submit" class="blue_btn" value="Add"/></td>
+            </tr>
+          </table>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

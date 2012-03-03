@@ -1,0 +1,8 @@
+<%= javascript_include_tag 'message' %> 
+<%= form_for(@message, :remote => true) do |f| %>
+  <%= f.hidden_field :receiver_ids, :value => get_username(message.sender_id) %>
+  <%= f.hidden_field :sender_id, :value => current_user.id %>
+  <%= f.text_area :message, :id => "message_message", :class => "reply_message_text_area"  %>
+  <span id="msg_error" class="form_error">&nbsp;</span>
+  <%= f.submit "Send", :class => "blue_btn float_l margin_top_five", :onclick => "return set_current_object(#{message.id})" %>
+<% end %>

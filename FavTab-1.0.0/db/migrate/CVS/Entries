@@ -1,0 +1,27 @@
+/001_devise_create_users.rb/1.2/Wed Jan 11 07:57:38 2012//
+/002_create_user_details.rb/1.1.1.1/Wed Jan  4 14:16:17 2012//
+/003_create_tabs.rb/1.1.1.1/Wed Jan  4 14:16:17 2012//
+/004_create_tab_sites.rb/1.1.1.1/Wed Jan  4 14:16:17 2012//
+/005_create_messages.rb/1.1.1.1/Wed Jan  4 14:16:17 2012//
+/006_create_follower_followings.rb/1.1.1.1/Wed Jan  4 14:16:17 2012//
+/007_create_discussions.rb/1.1.1.1/Wed Jan  4 14:16:17 2012//
+/008_create_user_discussions.rb/1.1.1.1/Wed Jan  4 14:16:17 2012//
+/009_create_comments.rb/1.1.1.1/Wed Jan  4 14:16:17 2012//
+/010_create_ratings.rb/1.2/Thu Jan 12 14:04:21 2012//
+/011_create_profile_pictures.rb/1.2/Tue Jan 10 14:53:29 2012//
+/012_create_admin_user.rb/1.1/Wed Jan 18 13:42:16 2012//
+/013_add_is_private_to_tabs.rb/1.1/Thu Jan 19 08:10:10 2012//
+/014_add_get_email_updates_to_follower_followings.rb/1.1/Mon Jan 23 08:21:49 2012//
+/015_add_title_to_tab_sites_and_discussions.rb/1.1/Mon Jan 23 09:26:41 2012//
+/016_change_is_private_in_tabs_to_share_type.rb/1.1/Sat Jan 28 12:34:25 2012//
+/017_create_shared_tabs.rb/1.2/Wed Feb  1 10:02:37 2012//
+/018_create_groups.rb/1.1/Tue Jan 31 13:09:24 2012//
+/019_create_group_users.rb/1.1/Tue Jan 31 13:09:24 2012//
+/020_create_albums.rb/1.1/Mon Feb 13 04:40:45 2012//
+/022_add_attachment_photo_to_picture.rb/1.1/Mon Feb 13 04:40:45 2012//
+/021_create_pictures.rb/1.2/Wed Feb 15 14:04:09 2012//
+/023_add_share_type_to_albums.rb/1.1/Wed Feb 15 14:38:13 2012//
+/024_create_likes.rb/1.1/Wed Feb 15 14:01:35 2012//
+/025_create_photo_comments.rb/1.1/Wed Feb 15 14:45:49 2012//
+/026_add_meta_to_pictures.rb/1.1/Sat Feb 18 08:10:35 2012//
+D

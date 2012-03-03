@@ -1,0 +1,25 @@
+<h1>Listing tab_sites</h1>
+
+<table>
+  <tr>
+    <th>Tab</th>
+    <th>Site url</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @tab_sites.each do |tab_site| %>
+  <tr>
+    <td><%= tab_site.tab_id %></td>
+    <td><%= tab_site.site_url %></td>
+    <td><%= link_to 'Show', tab_site %></td>
+    <td><%= link_to 'Edit', edit_tab_site_path(tab_site) %></td>
+    <td><%= link_to 'Destroy', tab_site, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Tab site', new_tab_site_path %>

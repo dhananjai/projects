@@ -1,0 +1,30 @@
+
+if(added_from_site)
+{
+<% if @photo.errors.blank?  %>
+  alert("Photo added successfully.");
+<% else %>
+  alert("<%= @photo.errors.first[1] %>");
+<% end %>
+window.close();
+}
+else
+{
+
+<% if @photo.errors.blank?  %>
+  <% if @photo.album_id==@current_album_id.to_i or @current_album_id=="" %>
+    jQuery("#show_remote_photos").hide();
+    reset_remote_photo_from();
+    var $items = jQuery("<%= escape_javascript(render :partial=>"photo_block", :locals=>{:pic=>@photo}).html_safe %>");
+    jQuery(".photos_container").prepend($items).masonry( 'appended', $items, true );
+    jQuery(".photos").hover(function(){
+    jQuery(this).find(".photo_actions").show().animate({'height':'23px'},"fast");
+    },function(){
+    jQuery(this).find(".photo_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide();});
+    });
+    setTimeout('jQuery(".photos_container").masonry( "reload" );',500);
+  <% end %>
+<% else %>
+  display_flash_message("<%= @photo.errors.first[1] %>");
+<% end %>
+}

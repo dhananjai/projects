@@ -1,0 +1,43 @@
+<%= javascript_include_tag 'tab' %>
+
+<div class="left_panel" align="center">
+  <%= render :partial => "user_left_panel" %>
+</div>
+<div class="main_panel">
+  <span class="blue_header">Followings</span>
+  <div class="follower_following_big_div">
+  <% @followings.each do |fl|%>
+    <div class="user_pic_<%= fl.id %> follower_following_img_block">
+      <% if @is_current_user %>
+      <span class="foll_action_span">
+        <a id="share_with_group_link" class="discussion_action_link foll_group_manage" href="javascript:void(0);" onclick="add_to_group(<%= fl.following_id %>);"><img src="/images/group.png" width="13" height="10" title="Change Group"/></a>
+        <a class="discussion_action_link delete_follower" onclick="follower_following_delete(jQuery(this), <%= fl.id %>)" href="javascript:void(0);"><img src="/images/cross-icon.png" title="Remove" /></a>
+      </span>
+      
+      <% end %>
+      <a href="<%= get_user_by_user_id(fl.following_id).profile_path %>" >
+        <img src="<%= get_user_by_user_id(fl.following_id).profile_pic(:medium) %>" class="medium_user_image" /></a>
+      <span ><a href="<%= get_user_by_user_id(fl.following_id).profile_path %>" style="width:50px;" class="user_name"><%= get_username(fl.following_id) %></a></span>
+    </div>
+  <% end %>
+
+  <%= will_paginate @followings %>
+</div>
+</div>
+<script type="text/javascript">
+  var curr_object = "";
+
+  function follower_following_delete(curr_obj, flid)
+  {
+    var answer = confirm("Are you sure, you want to remove?")
+    if(answer)
+    {
+	    curr_object = curr_obj;
+	    jQuery.get('/follower_following_delete/'+flid, function(data){
+	      jQuery(".user_pic_"+flid).remove();
+	    });
+    }
+    return false;
+  }
+ 
+</script>

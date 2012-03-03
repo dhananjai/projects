@@ -1,0 +1,301 @@
+/* CSS Document */
+
+/* CSS Document */
+body
+{
+	/*font-family: "Helvetica Neue",Arial,sans-serif;*/
+	font-family:Arial, Helvetica, sans-serif !important;
+	padding:0;
+	margin:0;
+	background-size:100%;
+	background-color:#4290B7;
+}
+.background_wrapper
+{
+	background: url("../images/new_bg.png") repeat-y scroll 0 0 transparent;
+        display: block;
+        height: auto !important;
+        min-height: 700px;
+        padding: 0 28px;
+        position: relative;
+        width: 925px;
+	
+}
+#page_wrapper {
+	display:block;
+	width:100%;
+	min-height:740px;
+}
+#wrapper {
+	display:block;
+	width:925px;
+	min-height:660px;
+	position:relative;
+}
+.top_header_bg
+{
+	display:block;
+	width:100%;
+	height:75px;
+	background:url(../images/top_header_bg_shadow.png) repeat-x;
+	position: absolute;
+    top: 0;
+}
+.header_container
+{
+	display:block;
+	width:100%;
+	height:65px;
+	clear:both;
+	background:url(../images/top_header_bg.png) repeat-x;
+}
+.body_container
+{
+	display:block;
+	width:905px;
+	min-height:560px;
+	clear:both;
+	background:#ffffff;
+	margin-top:55px;
+	padding:10px;
+	float:left;
+}
+.footer_container
+{
+	display:block;
+	width:100%;
+	height:35px;
+	clear:both;
+	background-color:#393B3C;
+	border-top: 3px solid #55a6c6;
+	padding: 15px 50px;
+    width: 880px;
+}
+.top_header_menu
+{
+	display:block;
+	list-style:none;
+	z-index:1;
+	margin:0;
+	
+}
+.top_header_menu li
+{
+	display: block;
+    float: left;
+    height: 43px;
+    list-style: none outside none;
+	width:105px;
+    
+}
+.top_header_menu li a
+{
+	float: left;
+    height: 43px;
+    padding-top: 22px;
+    width: 100px;
+	font-weight:bold;
+	color: #585858;
+	font-size:15px;
+	text-decoration:none;
+}
+.current_page_tab, .top_header_menu li a:hover
+{
+	background:url(../images/selected_tab.png) no-repeat;
+	color:#d96c04 !important;
+	cursor:pointer;
+}
+.sign_up_div
+{
+	display:block;
+	height:510px;
+	width:455px;
+	float:left;
+	background:url(../images/singup_panel_bg.png);
+	
+}
+.sign_in_div
+{
+	display:block;
+	height:440px;
+	width:450px;
+	float:right;
+	
+}
+.footer_main_ul
+{
+	display:block;
+	width:100%;
+	list-style:none;
+}
+.footer_main_ul li
+{
+	display:block;
+	width:50%;
+	float:left;
+	text-align:left;
+}
+.footer_nav
+{
+	display:block;
+	float:right;
+}
+.footer_nav li
+{
+	display:inline;
+	width:auto;
+	padding: 0 10px;
+	
+}
+.footer_nav li a,.footer_text
+{
+	font-size:11px;
+	color:#FFFFFF;
+	text-decoration:none;
+	font-weight:500;
+}
+.footer_nav li a.footer_current_page, .footer_nav li a:hover
+{
+	color:#d96c04 !important;
+}
+.form_field_name
+{
+	font-size:12px;
+	color:#585858;
+	font-weight:bold;
+}
+
+input[type="text"],input[type="email"]
+{
+ 	border: 1px solid #D0CECE;
+    color: #797979;
+    font-size: 12px;
+    font-weight: bold;
+    height: 18px;
+    width: 205px;
+	padding-left: 10px;
+	padding-top:7px;
+	margin-bottom: 4px;
+}
+input[type="password"]
+{
+	border: 1px solid #D0CECE;
+    color: #797979;
+    font-size: 12px;
+    font-weight: bold;
+    height: 20px;
+    width: 205px;
+	padding-left: 10px;
+	padding-top:5px;
+	margin-bottom: 4px;
+}
+.sign_up_form_elements
+{
+	display:block;
+	list-style:none;
+}
+.sign_up_form_elements li
+{
+	display:block;
+	width:217px;
+	clear:both;
+	text-align:left;
+}
+.signup_heading
+{
+	font-size:16px;
+	font-weight:bold;
+	color:#585858;
+}
+.sign_up_form_div
+{
+	display:block;
+	margin-top:85px;
+}
+.form_hint
+{
+	color:#858585;
+	font-size:9px;
+	width:217px;
+	display:block;
+	font-weight:normal;
+}
+.blue_btn
+{
+	border:none;
+	background:url(../images/blue_btn.png) no-repeat;
+	width:100px;
+	height:24px;
+	color:#FFFFFF;
+	font-size:12px;
+	font-weight:bold;
+	padding: 0px 0px 2px;
+	cursor: pointer;
+	outline:none;
+	margin:0 auto;
+}
+.top_twenty_margin
+{
+	margin-top:20px;
+}
+.left_panel_header
+{
+	display:block;
+	width:158px;
+	height: 15px;
+    padding-top: 4px;
+	background-color:#55a6c6;
+	color:#FFFFFF;
+	font-size:12px;
+	font-weight:bold;
+	clear:both;
+}
+.tab_options
+{
+	background:url(../images/tab_options_bg.png) no-repeat;
+	background-position: bottom right;
+	background-color:#FFFFFF;
+	right:8px;
+	/*height:115px;*/
+	width:120px;
+        padding-bottom: 8px;
+        border: none;
+}
+.option_list li.options
+{
+	width:100px;
+	float:left;
+	clear:both;
+}
+.grey_overlay
+{
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#E5464545,endColorstr=#E5464545);
+	/*-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";*/
+}
+.pop_up
+{
+	background:url(../images/popup_bg.png) no-repeat;
+	width:392px;
+	height:159px;
+}
+.popup_close_btn
+{
+	right:14px;
+}
+.hidden_element
+{
+	display:none;
+}
+.find_people_radio
+{
+    padding: 0px 0;
+}
+
+
+.no-boxshadow .pop_up
+{
+    background: white;
+    border-left: 1px solid #E3E5E6;
+    border-bottom: 2px solid #DDDDDD;
+    border-right: 3px solid #DDDDDD;
+}

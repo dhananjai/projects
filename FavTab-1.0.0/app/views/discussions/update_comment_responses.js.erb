@@ -1,0 +1,8 @@
+
+<% if @notice=="Comment updated sucessfully." %>
+curr_object.parent().parent().hide();
+curr_object.parent().parent().prev().html("<%= @comments.comment%>")
+curr_object.parent().parent().prev().show();
+curr_object.parent().parent().parent().children(".post_comment_div").children("span").show();
+<% end %>
+display_flash_message("<%= !@comments.errors.blank? ? @comments.errors.full_messages.to_sentence : @notice %>");

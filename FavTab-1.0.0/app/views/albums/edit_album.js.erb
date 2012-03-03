@@ -1,0 +1,9 @@
+var output_html = ("<%= escape_javascript(@album.name).html_safe %>");
+jQuery("#edit_group_popup").fadeOut(function(){
+ <% if @album.errors.blank? %>
+   jQuery("#album_name_edit_<%= @album.id%>").html(output_html);
+ <% end %>
+  display_flash_message("<%= escape_javascript(@notice).html_safe %>");
+});
+
+

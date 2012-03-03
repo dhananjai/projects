@@ -1,0 +1,41 @@
+<%  if !most_pop_discussions.blank? %>
+  <% most_pop_discussions.each do |discussion| %>
+    <%= render :partial => "simple_discussion_block", :locals=>{:discussion=>discussion}%>
+  <% end %>
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+      set_effects();
+
+      jQuery('.rating_class').each(function(v,i){
+        if(!jQuery(this).children("img").size()>0)
+        {
+          jQuery(this).raty({
+            click: function(score, evt) {
+              current_object = jQuery(this);
+              $(this).parent().submit();
+            }
+          });
+        }
+
+      });
+
+
+      jQuery(".rating_container").each(function(v,i){
+        var value = jQuery(this).children("span").html();
+        if(!jQuery(this).children('.rating_class_fixed').children("img").size()>0)
+        {
+          jQuery(this).children('.rating_class_fixed').raty({
+            readOnly:	true,
+            start:		value
+          });
+        }
+
+      });
+
+     
+    });
+
+
+ 
+  </script>
+<% end %>

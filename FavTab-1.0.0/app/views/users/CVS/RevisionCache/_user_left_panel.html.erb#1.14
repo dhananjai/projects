@@ -1,0 +1,32 @@
+<% @is_current_user = @login_user.id == @other_user.id %>
+<div class="profile_pic_div">
+  <img class="profile_pic_large" src="<%= @other_user.profile_pic(:large) %>" />
+  <span class="profile_user_name"><%= @other_user.username %></span>
+  <% unless @is_current_user %>
+    <span class="profile_follow_send_msg_link_span">
+      <a href="javascript:void(0)" class="action_link no_text_deco" onclick="jQuery('#send_message_pop_up').fadeIn();">Send Message</a>
+      <% if @login_user.is_following?(@other_user.id) %>
+         <br/>
+          <%= link_to "#{'Do Not ' if @login_user.is_email_update?(@other_user.id)}Get Email Updates", "/users/set_email_updates/#{@other_user.id}?set=false", :class=>"action_link no_text_deco padding_top_five" %>
+      <% else  %>
+        <% unless @login_user.is_admin? %>
+          <span class="link_seperator">|</span>
+          <%= link_to "Follow", "/users/follow/#{@other_user.id}", :class=>"action_link no_text_deco" %>
+        <% end %>
+      <% end %>
+    </span>
+  <% else %>
+    <span class="profile_follow_send_msg_link_span">
+      <%= link_to "Manage Groups", {:controller=>"users",:action=>"manage_groups"}, :class=>"red_button" %>
+    </span>
+      <span class="profile_follow_send_msg_link_span">
+      <%= link_to "Manage Albums", {:controller=>"albums", :action=>"index", :id => @login_user.id}, :class=>"red_button" %>
+    </span>
+  <% end %>
+</div>
+<% if !@login_user.is_admin? || (@other_user != @login_user) %>
+  <%= render :partial => "users/followers_followings" %>
+<% end %>
+<% unless @is_current_user %>
+  <%= render :partial => "users/send_message" %>
+<% end %>

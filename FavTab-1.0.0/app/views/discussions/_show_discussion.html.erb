@@ -1,0 +1,130 @@
+
+<div class="grey_overlay" id="show_discussion_popup" style="display: block;overflow-y:auto;">
+
+
+  <div class="popup_content discussion_full_detail_popup_c" style="width: 885px;left: 20px;min-height: 500px;">
+    <div class="clear_both ph_det_close_div">
+      <a href="javascript:void(0);" onclick="jQuery('#show_discussion_popup').fadeOut().remove();jQuery('body').css({'overflow':'auto'});" class="popup_close_btn">&nbsp;</a>
+    </div>
+    <div class="photo_det_user_det_div" style="display: none;">
+
+    </div>
+    <div class="photo_detail_pic_container">
+      <div align="center" class="photo_detail_pic_td">
+        <!-- main url start here -->
+        <div class="url_comments_wrapper discussion_<%= discussion.id %> ">
+          <!-- Url start here -->
+          <div class="urls_div root_div">
+
+            <div class="float_l">
+              <a href="<%=discussion.url%>" target="_blank" class="discus_web_url_link"><%= discussion.site_title %></a>
+              <div><%= render :partial=> "discussions/rating_partial", :locals=>{:rating_for => discussion, :section => 'popular'} %></div>
+              <div>
+                <span class="image_detail small_font">
+                  <span class="" ><%= Comment.count(:all, :conditions=>["discussion_id=?",discussion.id]) %></span> Comments
+                </span>
+                <span class="image_detail small_font"></span>
+              </div>
+              <div class="post_comment_div">
+                <span class="clear_both delete_discussion_div">
+                  <% if @login_user.is_admin? %>
+                        <!--<a href="javascript:void(0);" class="discussion_action_link" onclick="delete_discussion(<%= discussion.id %>,jQuery(this))">Delete</a>-->
+                  <% else %>
+                    <a class="discussion_action_link comment_link " href="javascript:void(0);">Post Comment</a>
+                  <% end %>
+                  <% if discussion.comments.count>0 %>
+                    <span class="discussion_action_link">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+                    <a class="discussion_action_link toggle_comment_tree " onclick="expand_comment_tree_from_start();" href="javascript:void(0);">Expand All Comments</a>
+                  <% end %>
+                </span>
+                <% unless @login_user.is_admin? %>
+                  <div class="comment_form_div">
+                    <% form_for :comment, :url=>{:controller=>:discussions, :action => 'post_comments'},:html=>{:id=>"comment_"+discussion.id.to_s}, :remote=>true do |f|  %>
+                      <%= text_area 'comment', 'comment', :class=>"post_comment_text_area float_l clear_both"%>
+                      <%= hidden_field 'comment','discussion_id', :value=>discussion.id, :id=>"dis_id"%>
+                      <a class="blue_btn clear_both float_l padding_top_six" onclick='post_comment("comment_<%= discussion.id %>",<%= discussion.id %>,jQuery(this));' id="post_discussion_comment" href="javascript:void(0);">Post Comment</a>
+                    <% end %>
+                    <a class="action_link no_text_deco float_l cancel_link comman_cancel_link" href="javascript:void(0);">Cancel</a>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+            <div style="display: block;padding: 20px 0 10px;width: 600px;overflow-x:auto;" class="comments_div main_comment_div">
+              <% discussion.comments.where('Parent_id is Null').each do |comment| %>
+                <%= render :partial => "discussions/outer_comment", :locals=>{:comment=>comment} %>
+              <% end %>
+            </div>
+          </div>
+          <!-- Url ends here -->
+        </div>
+        <!-- main url end here -->
+      </div>
+    </div>
+    <div class="photos_likers_container discussion_raters_<%= discussion.id %>">
+      <span class="clear_both black_bold"><b>Rated by</b></span>
+
+      <% discussion.raters.each do |l| %>
+        <a href="<%= l.profile_path %>" class="liker_<%= l.id %>">
+          <img src="<%= l.profile_pic(:small) %>" class="small_user_image float_l" title="<%= l.username %>" />
+        </a>
+      <% end if !discussion.raters.blank?%>
+    </div>
+
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    set_effects();
+  });
+</script>
+
+<script type="text/javascript">
+
+  jQuery("body").css({'overflow':'hidden'});
+  jQuery(document).ready(function(){
+    /*
+    if(jQuery("#show_discussion_popup .popup_content").height()<jQuery(window).height()/2)
+    {
+      jQuery("#show_discussion_popup .popup_content").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#show_discussion_popup .popup_content").height())/2+"px"});
+    }
+     */
+    jQuery("#show_discussion_popup .popup_content").css({"position":"absolute","left":(jQuery(window).width()-jQuery("#show_discussion_popup .popup_content").width())/2+"px"});
+    
+    jQuery("#show_discussion_popup").find('.rating_class').raty({
+      click: function(score, evt) {
+        current_object = jQuery(this);
+        $(this).parent().submit();
+      }
+    });
+
+
+    jQuery("#show_discussion_popup").find(".rating_container").each(function(v,i){
+      var value = jQuery(this).children("span").html();
+      jQuery(this).children('.rating_class_fixed').raty({
+        readOnly: true,
+        start:	value
+      });
+    });
+
+  });
+
+</script>
+<script type="text/javascript">
+  function expand_comment_tree_from_start()
+  {
+    if(jQuery(".toggle_comment_tree").html()=="Expand All Comments")
+    {
+      jQuery("#show_discussion_popup .comments_div").show().css("padding-left","10px");
+      jQuery(".main_comment_div").css("padding-left","0px");
+      jQuery("#show_discussion_popup .expand_btn").addClass("collapse_btn").removeClass("expand_btn");
+      jQuery(".toggle_comment_tree").html("Collapse All Comments");
+    }
+    else
+    {
+      jQuery("#show_discussion_popup .comments_div").hide();
+      jQuery(".main_comment_div").show();
+      jQuery("#show_discussion_popup .collapse_btn").addClass("expand_btn").removeClass("collapse_btn");
+      jQuery(".toggle_comment_tree").html("Expand All Comments");
+    }
+  }
+</script>

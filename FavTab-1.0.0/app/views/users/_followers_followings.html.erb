@@ -1,0 +1,37 @@
+<!-- Section for Following START -->
+<div class="left_panel_following">
+  <span class="left_panel_header">Following</span>
+  <% if @other_user.followings.present? %>
+  <div class="left_panel_user_pics_container">
+  <% @other_user.followings.each do |following| %>
+      <a href="/users/profile/<%= following.following.id %>" class="user_pic_<%= following.id %>">
+        <img src="<%= following.following.profile_pic(:small) %>" class="small_user_image" title="<%= following.following.username%>" alt="<%= following.following.username%>" /></a>
+  <% end %>
+  </div>
+
+  <span class="action_link no_text_deco fol_view_all_link">
+    <a href="/users/followings/<%= @other_user.id %>" class="action_link no_text_deco">View All</a>
+  </span>
+  <% end %>
+
+</div>
+
+
+<!-- Section for Following END -->
+
+<!-- Section for Follower START -->
+<div class="left_panel_following">
+  <span class="left_panel_header">Followers</span>
+  <% if @other_user.followers.present? %>
+  <div class="left_panel_user_pics_container">
+    <% @other_user.followers.each do |follower| %>
+      <a href="/users/profile/<%= follower.follower.id %>" class="user_pic_<%= follower.id %>" >
+        <img src="<%= follower.follower.profile_pic(:small) %>" title="<%= follower.follower.username%>" alt="<%= follower.follower.username%>" class="small_user_image" /></a>
+    <% end %>
+  </div>
+  <span class="action_link no_text_deco fol_view_all_link">
+    <a href="/users/followers/<%= @other_user.id %>" class="action_link no_text_deco">View All</a>
+  </span>
+  <% end %>
+</div>
+<!-- Section for Follower END -->

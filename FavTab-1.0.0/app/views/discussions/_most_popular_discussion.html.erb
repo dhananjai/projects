@@ -1,0 +1,13 @@
+<div class="discussion_block float_r">
+  <div class="discussion_header" align="left">
+    <span class="green_header padding_left_ten">Most Popular Discussions</span>
+  </div>
+  <div class="normal_url_block most_pop_discussions">
+    <div class="d_inner_div float_l">
+      <%= link_to "See all", {:action => "all_discussion"}, {:class => "discussion_action_link"} %>
+      <%@most_pop_discussions.each do |discussion|%>
+        <%= render :partial => "simple_discussion_block", :locals=>{:discussion=>discussion}%>
+      <% end %>
+    </div>
+  </div>
+</div>

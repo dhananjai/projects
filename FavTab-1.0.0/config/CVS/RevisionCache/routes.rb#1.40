@@ -1,0 +1,160 @@
+FavTabs::Application.routes.draw do
+  resources :albums
+
+  resources :profile_pictures
+
+  resources :ratings
+
+  resources :comments
+
+  resources :user_discussions
+
+  resources :follower_followings
+
+  resources :messages
+   match 'new_message' => 'messages#new_message'
+   match 'sent_messages' => 'messages#sent_messages'
+   match 'message_delete' => 'messages#message_delete'
+   match 'from_follower_following' => 'messages#from_follower_following'
+  resources :tab_sites
+
+  resources :tabs
+
+  resources :user_details
+  match 'logins/create' => 'logins#create'
+  match 'logins/activate/:id' => 'logins#activate'
+  match 'logins/forgot_password' => 'logins#forgot_password'
+  match 'login' => 'logins#login'
+  match 'logout' => 'logins#logout'
+  match 'test_remote_call' => 'users#test_remote_call'
+
+  match 'users/edit_profile_picture' => 'users#edit_profile_picture'
+  match 'about_us' => 'logins#about_us'
+  match 'contact_us' => 'logins#contact_us'
+
+
+ # resources :logins do
+  #  collection do
+   #   get 'home'
+   # end
+ # end
+  match "users/profile/:id"  => "users#my_account"
+
+  match 'users/followers/:id' => 'users#followers'
+  match 'users/followings/:id' => 'users#followings'
+  match 'users/follow/:id' => 'users#follow'
+  match 'users/set_email_updates/:id' => 'users#set_email_updates'
+  match 'follower_following_delete/:id' => 'users#follower_following_delete'
+
+  match "users/add_tab"  => "users#add_tab"
+  match "users/add_current_tab"  => "users#add_current_tab"
+  match "users/edit_tab"  => "users#edit_tab"
+  match "users/delete_tab"  => "users#delete_tab"
+  match "users/delete_site_url"  => "users#delete_site_url"
+  match "users/edit_site_url"  => "users#edit_site_url"
+  match "users/create_site"  => "users#create_site"
+  match "users/find_people" => "users#find_people"
+  match "users/manage_groups" => "users#manage_groups"
+  match "users/create_group" => "users#create_group"
+  match "users/edit_group" => "users#edit_group"
+  match "users/delete_group" => "users#delete_group"
+
+  match "users/set_tab_private/:id"  => "users#set_tab_private"
+  match "users/set_tab_public/:id"  => "users#set_tab_public"
+  match "share_with_group/:id"  => "users#share_with_group"
+  match "add_to_group/:id"  => "users#add_to_group"
+  match "remove_from_group/:id"  => "users#remove_from_group"
+  
+resources :discussions
+  match "discussions/create_discussion"  => "discussions#create_discussion"
+  match "discussions/post_comments"  => "discussions#post_comments"
+  match "discussions/join_discussion/:id"  => "discussions#join_discussion"
+  match "load_comments/:id"  => "discussions#load_comments"
+  match "load_my_comments/:id"  => "discussions#load_my_comments"
+  match "load_my_discussions/:id"  => "discussions#load_my_discussions"
+  match "discussions/post_comment_responses"  => "discussions#post_comment_responses"
+  match "all_discussion" => "discussions#all_discussion"
+  match "all_discussion" => "discussions#all_discussion"
+  match "load_discussion_as_per_time/:id" => "discussions#load_discussion_as_per_time"
+  match "discussions/update_comment_responses" => "discussions#update_comment_responses"
+  match "delete_comment/:id" => "discussions#delete_comment"
+  match "delete_discussion/:id" => "discussions#delete_discussion"
+  match "search_user_names_for_message/:term" => "users#search_user_names_for_message"
+
+  match "albums/index/:id"  => "albums#index"
+  match "find_photo" => "albums#find_photo"
+  match "add_photo" => "albums#add_photo"
+  match "add_photos_from_site" => "albums#add_photos_from_site"
+  match "load_my_groups" => "albums#load_my_groups"
+  match "load_photo_full_detail/:id" => "albums#load_photo_full_detail"
+  match "like_picture/:id" => "albums#like_picture"
+  match "unlike_picture/:id" => "albums#unlike_picture"
+  match "delete_picture/:id" => "albums#delete_picture"
+
+
+  #following path added for the autocomplete
+  resources :users do
+    get :autocomplete_user_username, :on => :collection
+    member do
+      post :rate
+    end
+  end
+  root :to => "logins#home"
+
+  # The priority is based upon order of creation:
+  # first created -> highest priority.
+
+  # Sample of regular route:
+  #   match 'products/:id' => 'catalog#view'
+  # Keep in mind you can assign values other than :controller and :action
+
+  # Sample of named route:
+  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
+  # This route can be invoked with purchase_url(:id => product.id)
+
+  # Sample resource route (maps HTTP verbs to controller actions automatically):
+  #   resources :products
+
+  # Sample resource route with options:
+  #   resources :products do
+  #     member do
+  #       get 'short'
+  #       post 'toggle'
+  #     end
+  #
+  #     collection do
+  #       get 'sold'
+  #     end
+  #   end
+
+  # Sample resource route with sub-resources:
+  #   resources :products do
+  #     resources :comments, :sales
+  #     resource :seller
+  #   end
+
+  # Sample resource route with more complex sub-resources
+  #   resources :products do
+  #     resources :comments
+  #     resources :sales do
+  #       get 'recent', :on => :collection
+  #     end
+  #   end
+
+  # Sample resource route within a namespace:
+  #   namespace :admin do
+  #     # Directs /admin/products/* to Admin::ProductsController
+  #     # (app/controllers/admin/products_controller.rb)
+  #     resources :products
+  #   end
+
+  # You can have the root of your site routed with "root"
+  # just remember to delete public/index.html.
+  # root :to => "welcome#index"
+
+  # See how all your routes lay out with "rake routes"
+
+  # This is a legacy wild controller route that's not recommended for RESTful applications.
+  # Note: This route will make all actions in every controller accessible via GET requests.
+  # match ':controller(/:action(/:id(.:format)))'
+end

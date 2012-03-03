@@ -1,0 +1,68 @@
+<div class="grey_overlay" id="share_album_with_group_popup" style="display: block;">
+  <div class="pop_up" style="height:<%= album.share_type == 2 ? '380px' : '125px' %>" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery(this).parent().parent().parent().remove()" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content" align="center">
+        <span class="popup_heading">Share Album With Group</span>
+       
+        <%= form_tag  :url=>{:controller => :albums, :action => 'share_album_in_group'}, :remote => true do |f|  %>
+          <div class="clear_both ph_privacy_options_div">
+            <span class="ph_privacy_options"><input <%= "checked" if album.share_type == 1 %> name="photos[share_type]" value="1" type="radio" class="float_l" onclick="jQuery('.share_tab_scrolled_div').hide();jQuery('#share_album_with_group_popup .pop_up').css('height','125px');jQuery('#share_album_with_group_popup .pop_up').center();" /><label>Private</label> </span>
+            <span class="ph_privacy_options"><input <%= "checked" if album.share_type == 0 %> name="photos[share_type]" value="0" type="radio" class="float_l" onclick="jQuery('.share_tab_scrolled_div').hide();jQuery('#share_album_with_group_popup .pop_up').css('height','125px');jQuery('#share_album_with_group_popup .pop_up').center();" /><label>Public</label> </span>
+            <span class="ph_privacy_options"><input id="share_album_in_group" <%= "checked" if album.share_type == 2 %> name="photos[share_type]" value="2" type="radio" class="float_l" onclick="jQuery('.share_tab_scrolled_div').show();jQuery('#share_album_with_group_popup .pop_up').css('height','380px');jQuery('#share_album_with_group_popup .pop_up').center();" /><label>Share With Groups</label> </span>
+            <br/><br/>
+            <span class="form_error" id="share_album_group_error"></span>
+          </div>
+          <div class="share_tab_scrolled_div" style="display:<%= album.share_type == 2 ? 'block' : 'none' %>">
+            <% if @login_user.groups.present? %>
+              
+                <table class="share_tab_user_table" id="add_to_group_rows">
+
+                  <% @login_user.groups.each do |grp| %>
+                    <tr>
+                      <td><input type="checkbox" id="grp_check_box_<%= grp.id %>" name="group_ids[]" value="<%= grp.id %>"></input></td>
+                      <td>
+                        <span class="user_name"><%= grp.name %></span>
+                      </td>
+
+                    </tr>
+                  <% end %>
+
+                </table>
+              
+              
+            <% else %>
+              There are no groups present
+            <% end %>
+            </div>
+            <div class="share_tab_submit_div" align="center">
+                <input type="submit" class="blue_btn" value="Submit" onclick="return check_album_share_in_group();"/>
+                <input type="hidden" id="album_id" name="album_id" value="<%=params[:id]%>"/>
+            </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+    jQuery("#share_album_with_group_popup .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#share_album_with_group_popup .pop_up").height())/2+"px"});
+    jQuery("#share_album_with_group_popup .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#share_album_with_group_popup .pop_up").width())/2+"px"});
+
+  });
+
+  function check_album_share_in_group()
+    {
+    flag = true;
+    if(jQuery("#share_album_in_group").attr("checked")=="checked" && jQuery("#share_album_with_group_popup .share_tab_scrolled_div input[type='checkbox']:checked").length==0)
+    {
+      flag=false;
+      jQuery("#share_album_group_error").html("Please select at least one group.");
+    }
+    return flag;
+  }
+
+  <% @login_user.groups_having_album_shared(params[:id]).each do |b_u| %>
+        jQuery("#grp_check_box_<%= b_u.id %>").attr("checked",true);
+  <% end %>
+</script>

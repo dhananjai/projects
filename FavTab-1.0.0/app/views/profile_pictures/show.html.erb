@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>User:</b>
+  <%= @profile_picture.user_id %>
+</p>
+
+<p>
+  <b>Filename:</b>
+  <%= @profile_picture.filename %>
+</p>
+
+<p>
+  <b>Size:</b>
+  <%= @profile_picture.size %>
+</p>
+
+<p>
+  <b>Content type:</b>
+  <%= @profile_picture.content_type %>
+</p>
+
+<p>
+  <b>Thumbnail:</b>
+  <%= @profile_picture.thumbnail %>
+</p>
+
+<p>
+  <b>Parent:</b>
+  <%= @profile_picture.parent_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_profile_picture_path(@profile_picture) %> |
+<%= link_to 'Back', profile_pictures_path %>

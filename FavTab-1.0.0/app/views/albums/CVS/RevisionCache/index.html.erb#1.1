@@ -1,0 +1,55 @@
+<div class="left_panel" align="center">
+  <%= render :partial => "users/user_left_panel" %>
+</div>
+<div class="main_panel">
+  <span class="blue_header"><span title="<%= @is_current_user ? "" : @other_user.username %> "><%= @is_current_user ? "My" : truncate(@other_user.username, :length=>20)+"'s" %></span> Albums</span>
+  <!-- Album container starts here -->
+  <div class="albums_container">
+
+    <span class="add_album_span">
+      <a class="album_action_link" href="javascript:void(0);">Add Album</a>
+    </span>
+
+    <!-- Album starts here -->
+    <div class="albums" id="album">
+      <a class="album_name" href="#">My Album</a>
+      <a class="album_prev" href="#">
+        <img src="/profile_pictures/photos/1/large_writing-curly-bracket.jpg" class="album_prev_thumb"/>
+        <img src="/images/profile_image.jpg" class="album_prev_thumb"/>
+        <img src="/images/profile_image.jpg" class="album_prev_thumb"/>
+        <img src="/profile_pictures/photos/1/large_writing-curly-bracket.jpg" class="album_prev_thumb"/>
+        <img src="/images/profile_image.jpg" class="album_prev_thumb"/>
+        <img src="/profile_pictures/photos/1/large_writing-curly-bracket.jpg" class="album_prev_thumb"/>
+        <img src="/images/profile_image.jpg" class="album_prev_thumb"/>
+        <img src="/images/profile_image.jpg" class="album_prev_thumb"/>
+        <img src="/images/profile_image.jpg" class="album_prev_thumb"/>
+      </a>
+      <div class="album_actions">
+        <a onclick="" class="album_action_link float_l" href="javascript:void(0);">Rename</a>
+        <a class="float_r album_action_link" href="javascript:void(0);">
+          <img title="Remove" style="width: 10px; height: 10px;" src="/images/cross-icon.png?1326521089" alt="Cross-icon"/>
+        </a>
+        <a id="share_with_group_link" class="album_action_link float_r" onclick="" href="javascript:void(0);">
+          <img width="13" height="10" title="Change Group" src="/images/group.png"/>
+        </a>
+
+      </div>
+
+    </div>
+    <!-- Album ends here -->
+
+  </div>
+  <!-- Album container ends here -->
+</div>
+<!-- Album ui script starts here -->
+<!-- Please dont move it -->
+<script type="text/javascript">
+  jQuery(function(){
+    jQuery(".albums").hover(function(){
+      jQuery(this).find(".album_actions").show().animate({'height':'15px'},"fast");
+    },function(){
+      jQuery(this).find(".album_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide()});
+    });
+  });
+</script>
+<!-- Album ui script ends here -->

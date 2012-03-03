@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Work info:</b>
+  <%= @user_detail.work_info %>
+</p>
+
+<p>
+  <b>Education:</b>
+  <%= @user_detail.education %>
+</p>
+
+<p>
+  <b>Age:</b>
+  <%= @user_detail.age %>
+</p>
+
+<p>
+  <b>Sex:</b>
+  <%= @user_detail.sex %>
+</p>
+
+<p>
+  <b>Interest internet:</b>
+  <%= @user_detail.interest_internet %>
+</p>
+
+<p>
+  <b>About me:</b>
+  <%= @user_detail.about_me %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @user_detail.user_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_user_detail_path(@user_detail) %> |
+<%= link_to 'Back', user_details_path %>

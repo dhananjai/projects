@@ -1,0 +1,19 @@
+/.gitignore/1.1.1.1/Wed Jan  4 14:16:15 2012//
+/.rspec/1.1/Thu Jan  5 08:31:57 2012//
+/README/1.1.1.1/Wed Jan  4 14:16:15 2012//
+/Rakefile/1.1.1.1/Wed Jan  4 14:16:15 2012//
+/config.ru/1.1.1.1/Wed Jan  4 14:16:15 2012//
+D/app////
+D/config////
+D/db////
+D/doc////
+D/features////
+D/lib////
+D/log////
+D/public////
+D/script////
+D/spec////
+D/test////
+D/vendor////
+/Gemfile/1.9/Sat Feb 18 08:05:47 2012//
+/Gemfile.lock/1.9/Sat Feb 18 08:07:04 2012//

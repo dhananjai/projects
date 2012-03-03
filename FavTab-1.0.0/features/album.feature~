@@ -1,0 +1,166 @@
+Feature: Album in Process
+   In order to test all Album functionality
+   as an user
+   I want various following scenarios.
+
+   @javascript
+   Scenario: See the Album link in left panel
+    Given I am on the home page
+    And I have logged in as user with named "satish" and email "satish@cipher-tech.com" and password "satish"
+    When I press "Sign In"
+    And I wait 2 seconds
+    And I go to the my account page
+    Then I should see "Photo Albums"
+
+   @javascript
+   Scenario: See manage albums page
+    Given I am on the home page
+    And I have logged in as user with named "satish" and email "satish@cipher-tech.com" and password "satish"
+    When I press "Sign In"
+    And I go to the my account page
+    Then I should see "Photo Albums"
+    When I follow "Photo Albums"
+    Then I go to the manage albums page
+    And I wait 2 seconds
+    And I should see "Add Album"
+    
+
+   @javascript
+   Scenario: See create album functionality
+    Given I am on the home page
+    And I have logged in as user with named "satish" and email "satish@cipher-tech.com" and password "satish"
+    When I press "Sign In"
+    And I go to the manage albums page
+    And I should see "Add Album"
+    And I wait 1 seconds
+    When I follow "Add Album"
+    And I wait 1 seconds
+    And I should see "Name:"
+    And I should see "Create"
+    And I wait 1 seconds
+
+   @javascript
+   Scenario: See add photo into the created album functionality
+    Given I am on the home page
+    And I have logged in as user with named "satish" and email "satish@cipher-tech.com" and password "satish"
+    When I press "Sign In"
+    And I go to the manage albums page
+    And I should see "Add Album"
+    And I wait 1 seconds
+    When I follow "Add Album"
+    And I wait 1 seconds
+    And I should see "Name:"
+    And I should see "Create"
+    And I wait 1 seconds
+    When I fill in the following:
+     | album[name] | My Albums |
+    And I press "Create"
+    And I wait 1 seconds
+    Then I should see "Album created successfully."
+    And I should see "My Albums" 
+    And I wait 2 seconds
+    When I follow "album_div_1"
+    Then I should see "Add Photo"
+    And I wait 2 seconds
+
+   @javascript
+   Scenario: See create album validation functionality
+    Given I am on the home page
+    And I have logged in as user with named "satish" and email "satish@cipher-tech.com" and password "satish"
+    When I press "Sign In"
+    And I go to the manage albums page
+    And I should see "Add Album"
+    When I follow "Add Album"
+    And I should see "Name:"
+    And I should see "Create"
+    And I wait 1 seconds
+    When I fill in the following:
+     | album[name] |  |
+    And I press "Create"
+    And I wait 1 seconds
+    Then I should see "Name can't be blank."
+    When I fill in the following:
+     | album[name] | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx |
+    And I press "Create"
+    And I wait 1 seconds
+    Then I should see "Name can't be of more than 20 characters."
+    And I wait 1 seconds
+    When I fill in the following:
+     | album[name] | My Photos |
+    And I press "Create"
+    And I wait 1 seconds
+    Then I should see "Album created successfully."
+    And I should see "My Photos" 
+    And I wait 2 seconds
+    Then I move the mouse over the div containing "My Photos"
+    And I wait 2 seconds
+    And I should see "Rename" 
+    And I wait 2 seconds
+    And I should see the image "cross-icon.png"
+    And I wait 1 seconds
+    And I should see "share_with_group_link"
+    And I wait 2 seconds
+
+   @javascript
+   Scenario: See album share with group functionality
+    Given I am on the home page
+    And I have logged in as user with named "satish" and email "satish@cipher-tech.com" and password "satish"
+    When I press "Sign In"
+    And I go to the manage albums page
+    And I have album named "My Best Moment"
+    And I have group named "My Friends"
+    When I follow "Share With Group"
+    Then I should see "share_with_group_popup"
+    And I should see "Share"
+    When I press "Add"
+    Then I should see "Please select at least one group."
+    And I check "grp_check_box_1"
+    And I press "Add"
+    Then I should see "Album shared successfully."
+
+   @javascript
+   Scenario: See album edit functionality
+    Given I am on the home page
+    And I have logged in as user with named "satish" and email "satish@cipher-tech.com" and password "satish"
+    When I press "Sign In"
+    And I go to the manage albums page
+    When I follow "Create Album"
+    And I fill in the following:
+     | album_name | Family |
+    And I press "Create"
+     And I wait 3 seconds
+    And I should see "Rename"
+    When I follow "Rename"
+    And I should see "Name:"
+    When I fill in the following:
+     | album_name_edit |  |
+    And I press "Update"
+    Then I should see "Name can't be blank."
+    When I fill in the following:
+     | album_name_edit |        |
+    And I press "Update"
+    Then I should see "Name can't be blank."
+    When I fill in the following:
+     | album_name_edit | xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx |
+    And I press "Update"
+    Then I should see "Name can't be of more than 50 characters."
+    When I fill in the following:
+     | album_name_edit | My Best Moment |
+    And I press "Update"
+    And I wait 1 seconds
+    Then I should see "Album name updated successfully."
+    And I should see "My Best Moment" within "[@class='album_name']"
+
+   @javascript
+   Scenario: See album delete functionality
+    Given I am on the home page
+    And I have logged in as user with named "satish" and email "satish@cipher-tech.com" and password "satish"
+    When I press "Sign In"
+    And I have album named "My Best Moment"
+    And I go to the manage albums page
+    Then I should see "My Best Moment"
+    And I should see "Rename"
+    And I should see "Delete"
+    When I follow "Delete"
+    And I accept confirm popup
+    Then I should not see "My Best Moment"

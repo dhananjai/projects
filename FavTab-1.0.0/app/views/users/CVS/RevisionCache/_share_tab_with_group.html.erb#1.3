@@ -1,0 +1,52 @@
+<div class="grey_overlay" id="share_with_group_popup" style="display: block;">
+  <div class="pop_up share_tab_popup"  >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="jQuery(this).parent().parent().parent().remove()" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content" align="center">
+         <span class="popup_heading">Share With Group<br/><br/><br/></span>
+         
+        <span class="error" id="share_tab_error"></span>
+        <%= form_tag  :url=>{:controller=>:users, :action => 'share_with_group'} do |f|  %>
+
+          <% if user.groups.present? %>
+            <div class="share_tab_scrolled_div">
+              <table class="share_tab_user_table" id="add_to_group_rows">
+
+                <% user.groups.each do |grp| %>
+                  <tr>
+                    <td><input type="checkbox" id="grp_check_box_<%= grp.id %>" name="group_ids[]" value="<%= grp.id %>"></input></td>
+                    <td>
+                      <span class="user_name"><%= grp.name %></span>
+                    </td>
+
+                  </tr>
+                <% end %>
+
+              </table>
+            </div>
+            <div class="share_tab_submit_div" align="center">
+              <input type="submit" class="blue_btn" value="Add" onclick="return check_share_with_group_form();"/>
+              <input type="hidden" id="tab_id" name="tab_id" value="<%=params[:id]%>"/>
+            </div>
+          <% else %>
+            There are no groups present
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  function check_share_with_group_form()
+  {
+    if(jQuery(".share_tab_user_table").find("input[type='checkbox']:checked").length==0)
+    {
+      jQuery("#share_tab_error").html("Please select at least one group.");
+      return false;
+    }
+  }
+
+  <% @login_user.groups_having_shared(params[:id]).each do |b_u| %>
+        jQuery("#grp_check_box_<%= b_u.id %>").attr("checked",true);
+  <% end %>
+</script>

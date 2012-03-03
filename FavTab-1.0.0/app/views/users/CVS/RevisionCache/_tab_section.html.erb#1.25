@@ -1,0 +1,173 @@
+<span class="green_header tab_header" title="xyz"><span title="<%= @is_current_user ? "" : @other_user.username %> "><%= @is_current_user ? "My" : truncate(@other_user.username, :length=>20)+"'s" %></span> Tabs</span>
+<span class="new_tab_div">
+  <% if @is_current_user %><a href="javascript:void(0);" class="action_link no_text_deco add_tab">Add New Tab List</a><% end %>
+</span>
+<% if @tabs.present? %>
+  <div class="tabs_outer_div">
+    <ul class="tabs_ul">
+      <% @tabs.each do |tab| %>
+        <li class="tab">
+          <a href="javascript:void(0);" id="expand_tab" class="toggle_tab expand_btn">&nbsp;</a>
+          <span class="tab_name"><%= tab.name%></span>
+          <a href="javascript:void(0);" id="toggle_tab_option_link" class="toggle_tab_option option_down">&nbsp;</a>
+        </li>
+        <div class="tab_options">
+          <ul class="option_list">
+            <li class="options"><a href="javascript:void(0);" onclick="openWindows('<%=  tab.sites %>');" class='no_text_deco' >Go To Tabs</a></li>
+	    <% if @is_current_user %>
+              <li class="options"><a href="javascript:void(0);" id="<%=tab.id %>" class="current_tab no_text_deco">Add Open Tabs</a></li>
+              <li class="options"><a href="javascript:void(0);" name="<%=tab.name%>" id="<%=tab.id %>" class="edit_tab no_text_deco">Edit Name</a></li>
+              <li class="options"><a href="javascript:void(0);" id="<%=tab.id %>" class="add_site no_text_deco" >Add Site</a></li>
+              <li class="options"><%= link_to 'Delete Tab List', {:controller=>'users', :action=>'delete_tab', :id=>tab.id }, :class=>'no_text_deco', :onclick=>"return confirm('Are you sure?');"%></li>
+              <% if tab.share_type!=1 %>
+                <li class="options"><%= link_to "Make Private", {:controller=>'users', :action=>'set_tab_private', :id=>tab.id }, :class=>'no_text_deco' %></li>
+              <% end %>
+              <% if tab.share_type!=0 %>
+                <li class="options"><%= link_to "Make Public", {:controller=>'users', :action=>'set_tab_public', :id=>tab.id }, :class=>'no_text_deco' %></li>
+              <% end %>
+              
+                <li class="options">
+                  <%#= link_to "Make Private", {:controller=>'users', :action=>'set_tab_private', :id=>tab.id }, :class=>'no_text_deco' %>
+                  <a href="javascript:void(0);" onclick="show_share_with_group_popup(<%= tab.id %>);" class="no_text_deco">Share With Group</a>
+                </li>
+            <% end %>
+          </ul>
+        </div>
+        <div class="tab_detail">
+          <ul class="link_list">
+            <% tab.tab_sites.each do |tab_site| %>
+            <li class="link_url"><a class="tab_url" href="<%= tab_site.site_url%>" target="_blank"><%= tab_site.site_title%></a>
+	<% if @is_current_user %>
+		<a href="javascript:void(0);" id="<%=tab_site.id %>" name="<%=tab_site.tab_id%>"class="float_r no_text_deco edit_site" >&nbsp;&nbsp;Edit</a><%= link_to image_tag("/images/cross-icon.png",:style=>"width:10px;height:10px;",:title=>"Remove"), {:controller=>'users', :action=>'delete_site_url',:id=>tab_site.id}, :class=>"float_r no_text_deco delete_site",:confirm=>"Are you sure?", :remote => true %></li>
+	<% end %>
+            <% end %>
+          </ul>
+        </div>
+      <%end%>
+    </ul>
+  </div>
+<% else %>
+
+  <div class="tabs_outer_div">No tabs are present.</div>
+<% end %>
+<script type="text/javascript">
+   function show_share_with_group_popup(tab_id)
+   {
+      jQuery.get("/share_with_group/"+tab_id,function(data){
+        //alert(data);
+        jQuery("body").append(data);
+        //jQuery("#share_with_group_popup #tab_id").val(tab_id);
+        jQuery("#share_with_group_popup .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#share_with_group_popup .pop_up").height())/2+"px"});
+        jQuery("#share_with_group_popup .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#share_with_group_popup .pop_up").width())/2+"px"});
+      });
+   }
+
+
+	jQuery(document).ready(function(){
+		/*for css*/
+               
+		doc_ht = jQuery(document).height();
+
+		jQuery(".background_wrapper").css('height',doc_ht+'px');
+		if(jQuery.browser.opera)
+		{
+			jQuery(".blue_btn").css('padding-bottom','2px');
+		}
+		/* UI Functionality */
+		jQuery(".toggle_tab").click(function(){
+			var current_ex_btn = jQuery(this);
+			current_ex_btn.parent().next().next().slideToggle();
+			if(current_ex_btn.hasClass("expand_btn"))
+			{
+				current_ex_btn.removeClass("expand_btn").addClass("collapse_btn");
+			}
+			else
+			{
+				current_ex_btn.removeClass("collapse_btn").addClass("expand_btn");
+			}
+		});
+		jQuery(".toggle_tab_option").click(function(){
+			var current_ex_btn = jQuery(this);
+
+			if(current_ex_btn.hasClass("option_down"))
+			{
+				jQuery(".tab_options").hide();
+                                jQuery(".toggle_tab_option").removeClass("option_up").addClass("option_down");
+				current_ex_btn.parent().next().slideToggle();
+				current_ex_btn.removeClass("option_down").addClass("option_up");
+			}
+			else
+			{
+				current_ex_btn.parent().next().slideToggle();
+				current_ex_btn.removeClass("option_up").addClass("option_down");
+			}
+		});
+  jQuery(".add_site").click(function(){
+    jQuery("#add_new_site .error").html("");
+    jQuery("#add_new_site").show();
+    jQuery("#site_tab_id").val(jQuery(this).attr("id"));
+    jQuery(".popup_heading").html("Add Site");
+    jQuery(".blue_btn").val("Add");
+    jQuery("#site_site_url").val("");
+    jQuery(".popup_content").find('form').attr("action","/users/create_site");
+  });
+
+  jQuery(".add_tab").click(function(){
+    jQuery("#add_new_tab").show();
+    jQuery("#add_new_tab .error").html("");
+    jQuery(".popup_heading").html("Add Tab List");
+    jQuery("#add_new_tab").find(".blue_btn").val("Add");
+    jQuery("#tab_name").val("");
+    jQuery("#tab_id").val(jQuery(this).attr("id"));
+    jQuery(".popup_content").find('form').attr("action","/users/add_tab");
+
+
+  });
+
+  jQuery(".edit_tab").click(function(){
+    jQuery("#add_new_tab .error").html("");
+    jQuery("#add_new_tab #tabNameError").html("");
+    jQuery("#add_new_tab").show();
+    jQuery(".popup_heading").html("Edit Tab List");
+    jQuery(".blue_btn").val("Update");
+    var tab_name = jQuery(this).parent().parent().parent().prev().find(".tab_name").html();
+    jQuery("#tab_name").val(tab_name);
+    jQuery("#tab_id").val(jQuery(this).attr("id"));
+    jQuery(".popup_content").find('form').attr("action","/users/edit_tab");
+  });
+
+
+  jQuery(".edit_site").click(function(){
+    jQuery("#add_new_site .error").html("");
+    jQuery("#add_new_site").show();
+    jQuery(".popup_heading").html("Edit Site");
+    jQuery(".blue_btn").val("Update");
+    jQuery("#site_site_url").val(jQuery(this).parent().children("a.tab_url").attr("href"));
+    jQuery("#site_id").val(jQuery(this).attr("id"));
+    jQuery("#site_tab_id").val(jQuery(this).attr("name"));
+    jQuery(".popup_content").find('form').attr("action","/users/edit_site_url");
+  });
+
+  
+  jQuery(".current_tab").click(function(){
+    jQuery("#add_current_tab .error").html("");
+    jQuery("#add_current_tab").show();
+    jQuery("#current_tab_tab_id").val(jQuery(this).attr("id"));
+    jQuery(".popup_content").find('form').attr("action","/users/add_current_tab");
+  });
+
+  jQuery(".pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery(".pop_up").height())/2+"px"});
+  jQuery(".pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery(".pop_up").width())/2+"px"});
+
+
+  $('.delete_site').bind('ajax:success', function() {
+    $(this).closest('li').fadeOut();
+  });
+
+});
+
+
+</script>
+<%= render :partial=>"add_edit_tab"%>
+<%= render :partial=>"add_site"%>
+<%= render :partial=>"add_current_tab"%>

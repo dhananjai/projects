@@ -1,0 +1,81 @@
+
+<div class="grey_overlay" id="show_photo_detail_popup" style="display: block;overflow-y:auto;">
+
+
+  <div class="popup_content photo_full_detail_popup_c" style="width: 885px;left: 20px">
+    <div class="clear_both ph_det_close_div">
+      <a href="javascript:void(0);" onclick="jQuery('#show_photo_detail_popup').fadeOut().remove();jQuery('body').css({'overflow':'auto'});" class="popup_close_btn">&nbsp;</a>
+    </div>
+    <div class="photo_det_user_det_div">
+       <% pic_user = pic.album.user %>
+      <a href="<%= pic_user.profile_path %>" class="ph_com_pr_pic">
+        <img class="medium_user_image" src="<%= pic_user.profile_pic(:medium) %>"/>
+      </a>
+      <span class="ph_com_texts">
+       
+        <a href="<%= pic_user.profile_path %>" class="ph_com_usr_name ph_det_usr_name">
+          <%= pic_user.username %>
+        </a>
+      </span>
+
+    </div>
+    <div class="photo_detail_pic_container">
+      <div align="center" class="photo_detail_pic_td">
+            <img src="<%= pic.photo(:original) %>" class="photo_full_pic" />
+      </div>
+      <div>
+            <span class="image_detail"><%= pic.photo_detail %> </span>
+            <% if !pic.site_name.nil? %><span class="image_detail">Added from <a class="site_name" href="http://<%=pic.site_name%>" target="_blank"><%= pic.site_name %></a> </span><%end%>
+            <span class="image_detail small_font">
+              <span class="pic_count_<%= pic.id %>" ><%= pic.like_count %></span>  Like | <span class="pic_comment_count_<%= pic.id %>" ><%= pic.comment_count %></span> Comments
+            </span>
+      </div>
+      <div>
+            <% if pic.album.user_id!=@login_user.id %>
+              <%  if !pic.is_liked_by(@login_user.id) %>
+                <%=  link_to 'Like', {:action => 'like_picture', :id => pic.id }, :remote=>true, :class => "album_action_link float_l like_link_#{pic.id}" %>
+              <% else %>
+                <%=  link_to 'Unlike', {:action => 'unlike_picture', :id => pic.id }, :remote=>true, :class => "album_action_link float_l like_link_#{pic.id}" %>
+              <% end %>
+              <!--<a href="javascript:void(0);" class="album_action_link float_l" style="display: block">Import</a>-->
+            <% end %>
+      </div>
+      <div class="photo_full_det_comments photos_comment_div_<%= pic.id %>">
+        <% pic.photo_comments.each do |p_c| %>
+          <%= render :partial => "photo_comment_block", :locals=>{:comment=>p_c} %>
+        <% end %>
+      </div>
+      <div class="ph_post_com_div">
+        <%= form_for :photos, :url=>{:controller=>:albums, :action => 'post_photo_comment'},:remote=>true do |f|  %>
+          <textarea name="comment" class="ph_com_text_area"></textarea>
+          <input type="hidden" name="picture_id" value="<%= pic.id %>"/>
+          <input type="submit" value="Post" class="float_r" onclick="return check_phot_comment_form(jQuery(this));" />
+        <% end %>
+        <!--<a onclick="" class="blue_btn clear_both float_r padding_top_six center_text">Post Comment</a>-->
+      </div>
+    </div>
+    <div class="photos_likers_container photos_likers_container_<%= pic.id %>">
+      <span class="clear_both black_bold"><b>Liked by</b></span>
+      <% pic.likers.each do |l| %>
+        <a href="<%= l.profile_path %>" class="liker_<%= l.id %>">
+          <img src="<%= l.profile_pic(:small) %>" class="small_user_image float_l" title="<%= l.username %>" />
+        </a>
+      <% end if !pic.likers.blank?%>
+    </div>
+
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  jQuery("body").css({'overflow':'hidden'});
+  jQuery(document).ready(function(){
+   /* if(jQuery("#show_photo_detail_popup .popup_content").height()<jQuery(window).height()/2)
+    {
+      jQuery("#show_photo_detail_popup .popup_content").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#show_photo_detail_popup .popup_content").height())/2+"px"});
+    }
+    */
+    jQuery("#show_photo_detail_popup .popup_content").css({"position":"absolute","left":(jQuery(window).width()-jQuery("#show_photo_detail_popup .popup_content").width())/2+"px"});
+  });
+  
+</script>

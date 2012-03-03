@@ -1,0 +1,113 @@
+  
+<script type="text/javascript" src="/javascripts/jquery.ui.selectmenu.js"></script>
+<link type="text/css" rel="stylesheet" media="screen" href="/stylesheets/jquery.ui.selectmenu.css"></link>
+
+<div class="grey_overlay" id="show_photo_from_syst">
+  <div class="pop_up" style="height: 295px;width: 450px;" >
+    <div class="popup_inner_div">
+      <a href="javascript:void(0);" onclick="reset_remote_photo_from();" class="popup_close_btn">&nbsp;</a>
+      <div class="popup_content" style="width: 395px;">
+        <span class="popup_heading clear_both">Upload Photo</span>
+        <div id="upload_photo_form" class="photo_form1">
+          <%= form_for :photos, :url=>{:controller=> 'albums', :action => 'add_photo_from_system'}, :html => {:multipart => true}, :remote=>true do |f|  %>
+            <table width="100%" class="popup_form_table">
+              <tr>
+                <td  align="left" width="30%"><span class="form_field_name">Select a photo:<span class="mendatory">*</span></span></td>
+                <td align="left" ><%= file_field :photos, :photo, :style=>"height:21px;width:200px;font-size:10px;"%><br/><span id="picError" class="form_error"></span></td>
+              </tr>
+              <tr>
+              <div class="add_rem_ph_form" style="height: 123px">
+                <label for="album">Select an Album:</label>
+                <select  name="photos[album_id]" class="album_select_menu" id="album_select_menu_from_syst">
+                  <option value="none">Select Album</option>
+                  <% @album.each do |a| %>
+                    <option value="<%= a.id %>"><%= a.name %></option>
+                  <% end %>
+                </select><br/>
+                <span id="album_photo_frm_syst_error" class="form_error"></span>
+                <label for="album">Details:</label>
+                <textarea id="photo_frm_syst_detail" class="phot_details_text" name="photos[photo_detail]"> </textarea>
+                <span id="detail_error_for_photo_frm_syst" class="form_error"></span>
+                <br/>
+              </div>
+             
+              <div class="clear_both ph_privacy_options_div">
+                <span class="ph_privacy_options"><input checked name="photos[share_type]" value="1" type="radio" class="float_l" onclick="jQuery('#groups').hide();jQuery('#show_photo_from_syst .pop_up').css('height','295px');" /><label>Private</label> </span>
+                <span class="ph_privacy_options"><input name="photos[share_type]" value="0" type="radio" class="float_l" onclick="jQuery('#groups').hide();jQuery('#show_photo_from_syst .pop_up').css('height','295px')" /><label>Public</label> </span>
+                <span class="ph_privacy_options"><input name="photos[share_type]" value="2" type="radio" class="float_l" onclick="fetch_my_groups_for_album()" /><label>Share With Groups</label> </span>
+                <br/><br/>
+                <div id="groups" class="groups float_l" style="display: none;width:398px;" align="left"></div>
+              </div>
+              <td><input type="submit" class="blue_btn" value="Upload" onclick="return check_photo_form_system()"/></td>
+              </tr>
+            </table>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  jQuery(document).ready(function(){
+    jQuery("#show_photo_from_syst .pop_up").css({"position":"fixed","top":(jQuery(window).height()-jQuery("#show_photo_from_syst .pop_up").height())/2+"px"});
+    jQuery("#show_photo_from_syst .pop_up").css({"position":"fixed","left":(jQuery(window).width()-jQuery("#show_photo_from_syst .pop_up").width())/2+"px"});
+    jQuery('.album_select_menu').selectmenu();
+  });
+
+  function fetch_my_groups_for_album()
+  {
+    jQuery.get("/load_my_groups",function(data){
+      jQuery("#show_photo_from_syst .pop_up").css("height","430px")
+      jQuery("#groups").show();
+      jQuery("#groups").html(data,function(){alert("hi")});
+    });
+  }
+  
+
+  function check_photo_form_system()
+  {
+    jQuery(".form_error").html("");
+    var img_detail = jQuery("#photo_frm_syst_detail");
+    var album = jQuery("#album_select_menu_from_syst");
+    var flag = true;
+
+    if(album.val()=="none")
+    {
+      flag=false;
+      jQuery("#album_photo_frm_syst_error").html("Please select an album.");
+    }
+    if(jQuery.trim(img_detail.val()).length==0)
+    {
+      flag=false;
+      
+      jQuery("#detail_error_for_photo_frm_syst").html("Please enter photo details.");
+      //img_detail.next(".form_error").html("Please enter photo details.");
+    }
+    else
+    {
+      if(img_detail.val().length>500)
+      {
+        flag=false;
+        jQuery("#detail_error_for_photo_frm_syst").html("Photo details should be of maximum 500 characters.");
+        //img_detail.next(".form_error").html("Photo details should be of maximum 500 characters.");
+      }
+    }
+
+
+    return flag;
+  }
+
+  function reset_remote_photo_from()
+  {
+    jQuery("#show_photo_from_syst").hide();
+    jQuery("#site_url_prev, #photo_detail").val("");
+  }
+</script>
+
+<style>
+  body {font-size: 11px ; font-family:"Verdana",sans-serif; }
+  fieldset { border:0; }
+  label,select,.ui-select-menu { float: left; margin-right: 10px; }
+  select { width: 200px; }
+  .wrap ul.ui-selectmenu-menu-popup li a { font-weight: bold; }
+</style>

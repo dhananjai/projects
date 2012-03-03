@@ -1,0 +1,14 @@
+
+var $output_html = jQuery("<%= escape_javascript(render :partial => "photos_multiple", :locals=>{:pictures=>@pictures}).html_safe %>");
+jQuery(".photos_container").append($output_html).masonry( 'appended', $output_html, true );
+jQuery(".photos").hover(function(){
+      jQuery(this).find(".photo_actions").show().animate({'height':'23px'},"fast");
+    },function(){
+      jQuery(this).find(".photo_actions").animate({'height':'0px'},"fast",function(){jQuery(this).hide();});
+    });
+jQuery(".photo_loader_div").hide();
+setTimeout('jQuery(".photos_container").masonry( "reload" );',100);
+jQuery(".photo_loader_div").hide();
+<%  if @pictures.blank? %>
+ finish();
+<% end %>

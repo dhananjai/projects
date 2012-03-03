@@ -1,0 +1,11 @@
+jQuery("#create_group_popup").fadeOut(function(){
+<% if @album.id %>
+  var output_html = ("<%#= escape_javascript(render :partial => "album_block", :locals=>{:grp=>@album}).html_safe %>");
+    jQuery("#groups_container").append(output_html);
+    display_flash_message("<%= escape_javascript(@notice).html_safe %>");
+<% else %>
+
+    display_flash_message("<%= escape_javascript(@notice).html_safe %>");
+
+<% end %>
+  });
